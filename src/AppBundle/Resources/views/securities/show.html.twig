@@ -1,0 +1,10 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block crumb %}
+    Securities
+{% endblock %}
+
+{% block body %}
+    <h1 class="g-unit">{{ title }}</h1>
+    {% include security.templatePath with security.vars only %}
+{% endblock %}
