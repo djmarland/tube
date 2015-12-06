@@ -1,59 +1,98 @@
 .linebox {
     color: #fff;
     background: #444;
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px transparent;
+}
+
+@mixin bord($color) {
+    border-top-color: lighten($color, 10%);
+    border-bottom-color: darken($color, 10%);
+    &:hover {
+        border-top-color: $color;
+        border-bottom-color: $color;
+    }
 }
 
 .linebox--bakerloo {
-    background: #AE6118;
+    $color: #AE6118;
+    background: $color;
+    @include bord($color);
 }
 
 .linebox--central {
-    background: #E41F1F;
+    $color: #E41F1F;
+    background: $color;
+    @include bord($color);
 }
 
 .linebox--circle {
-    background: #F8D42D;
+    $color: #F8D42D;
+    background: $color;
     color: #111;
+    @include bord($color);
 }
 
 .linebox--district {
-    background: #007229;
+    $color: #007229;
+    background: $color;
+    @include bord($color);
 }
 
 .linebox--dlr {
-    background: #00BBB4;
+    $color: #00BBB4;
+    background: $color;
+    @include bord($color);
 }
 
 .linebox--hammersmith-city {
-    background: #E899A8;
+    $color: #E899A8;
+    background: $color;
+    @include bord($color);
     color: #111;
 }
 
 .linebox--jubilee {
-    background: #686E72;
+    $color: #686E72;
+    background: $color;
+    @include bord($color);
 }
 
 .linebox--metropolitan {
-    background: #893267;
+    $color: #893267;
+    background: $color;
+    @include bord($color);
 }
 
 .linebox--northern {
-    background: #000000;
+    $color: #000000;
+    background: $color;
+    @include bord($color);
 }
 
 .linebox--london-overground {
-    background: #e86a10;
+    $color: #e86a10;
+    background: $color;
+    @include bord($color);
 }
 .linebox--piccadilly {
-    background: #0450A1;
+    $color: #0450A1;
+    background: $color;
+    @include bord($color);
 }
 .linebox--victoria {
-    background: #009FE0;
+    $color: #009FE0;
+    background: $color;
+    @include bord($color);
 }
 .linebox--waterloo-city {
-    background: #70C3CE;
+    $color: #70C3CE;
+    background: $color;
+    @include bord($color);
     color: #111;
 }
 .linebox--tfl-rail {
-    background: #0019a8;
+    $color: #0019a8;
+    background: $color;
+    @include bord($color);
 }
