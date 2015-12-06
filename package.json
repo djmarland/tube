@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "PHP App",
   "private": true,
-  "main": "Gruntfile.js",
+  "main": "GulpFile.js",
   "dependencies": {},
   "devDependencies": {
     "gulp": "~3.9.0",

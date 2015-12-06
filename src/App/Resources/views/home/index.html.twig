@@ -1,0 +1,17 @@
+{% extends 'App::base.html.twig' %}
+
+
+{% block body %}
+<ol class="list--unstyled">
+    {% for line in lines %}
+        <li class="statusbox linebox linebox--{{ line.key }}">
+            <div class="statusbox__name">
+                {{ line.name }}
+            </div>
+            <div class="statusbox__status">
+                {{ line.status }}
+            </div>
+        </li>
+    {% endfor %}
+</ol>
+{% endblock %}

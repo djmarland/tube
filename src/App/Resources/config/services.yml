@@ -1,0 +1,13 @@
+services:
+
+  app.listener.preexecute:
+      class: App\Resources\Listener
+      tags:
+          - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+  app.guzzle_client:
+      class: GuzzleHttp\Client
+
+  app.services.line:
+      class: TubeService\Service\LineService
+      arguments: ["@app.guzzle_client"]

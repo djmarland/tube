@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Securities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/dist/css/global.css" />
+</head>
+<body class="{% block bodyClass %}{% endblock %}">
+{% block header %}
+<div class="app">
+    <header class="header">
+        HEAD
+    </header>
+    <main class="main">
+        <div id="main-body">
+{% endblock %}
+{% block body %}{% endblock %}
+{% block footer %}
+        </div>
+    </main>
+    <footer class="footer">
+        FOOT
+    </footer>
+</div>
+{% endblock %}
+<script src="/static/dist/js/bootstrap.js"></script>
+</body>
+</html>

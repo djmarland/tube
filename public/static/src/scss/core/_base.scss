@@ -1,0 +1,45 @@
+@import '../vendor/normalize';
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+html, body {
+    min-height: 100%;
+    margin: 0;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    padding: 0;
+    background: $color-body;
+    color: $color-text;
+    font-family: $font-body;
+}
+
+
+img,
+svg {
+    width: 100%;
+    height: auto;
+}
+
+a {
+    font-weight: inherit;
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.sf-toolbarreset {
+    *, *:before, *:after {
+        box-sizing: content-box;
+    }
+    img,
+    svg {
+        width: auto;
+        height: auto;
+    }
+}
