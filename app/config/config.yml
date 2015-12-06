@@ -35,7 +35,8 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     paths:
-            "%kernel.root_dir%/../src/App/Presenter": AppBundle/Presenter
+            "%kernel.root_dir%/../src/App/Presenter": App/Presenter
+            "%kernel.root_dir%/../public/static/dist/": public
 
 # Doctrine Configuration
 doctrine:

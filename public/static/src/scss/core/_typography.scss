@@ -1,12 +1,16 @@
 // sizes
+// @todo - mixins for sizes, plus line height
 .a {
     font-size: 96px;
     font-size: 3rem;
-    // @todo line-height
+    line-height: 1.2;
+    letter-spacing: -2px;
 }
 .b {
     font-size: 38.4px;
     font-size: 2.4rem;
+    line-height: 1.4;
+    letter-spacing: -1px;
 }
 .c {
     font-size: 28.8px;
@@ -19,6 +23,7 @@
 .e {
     font-size: 16px;
     font-size: 1rem;
+    line-height: 1.4;
 }
 .f {
     font-size: 14px;
@@ -55,6 +60,7 @@ h4,
 
 p {
     @extend .e;
+    margin: 0;
 }
 
 h5,
@@ -69,8 +75,4 @@ h6,
     @extend .f;
     text-transform: uppercase;
     margin: 0;
-}
-
-.h-lined {
-    border-bottom: solid 1px $color-subtle;
 }

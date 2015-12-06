@@ -55,4 +55,9 @@ class Line extends Entity
     {
         return implode(', ', $this->getStatuses());
     }
+
+    public function isDisrupted()
+    {
+        return ($this->getStatus() !== 'Good Service');
+    }
 }

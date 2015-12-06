@@ -5,15 +5,15 @@
 }
 
 html, body {
-    min-height: 100%;
     margin: 0;
 }
 
 html {
-    overflow-y: scroll;
+    height: 100%;
 }
 
 body {
+    min-height: 100%;
     padding: 0;
     background: $color-body;
     color: $color-text;
@@ -21,25 +21,38 @@ body {
 }
 
 
-img,
+img {
+    width: 100%;
+}
 svg {
     width: 100%;
-    height: auto;
+    height: 100%;
+    vertical-align: top;
+    fill: currentColor;
 }
 
 a {
     font-weight: inherit;
-    color: inherit;
+    color: $color-link;
     text-decoration: inherit;
+    &:hover,
+    &:active,
+    &:focus {
+        text-decoration: underline;
+    }
 }
 
-.sf-toolbarreset {
-    *, *:before, *:after {
-        box-sizing: content-box;
-    }
-    img,
-    svg {
-        width: auto;
-        height: auto;
+.page-limit {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: $grid-unit-small;
+    padding-right: $grid-unit-small;
+    max-width: 976px;
+}
+
+@include mq($from: m) {
+    .page-limit {
+        padding-left: $grid-unit-large;
+        padding-right: $grid-unit-large;
     }
 }

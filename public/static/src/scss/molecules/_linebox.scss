@@ -1,17 +1,15 @@
 .linebox {
     color: #fff;
     background: #444;
-    border-top: solid 1px transparent;
-    border-bottom: solid 1px transparent;
 }
 
 @mixin bord($color) {
-    border-top-color: lighten($color, 10%);
-    border-bottom-color: darken($color, 10%);
-    &:hover {
-        border-top-color: $color;
-        border-bottom-color: $color;
-    }
+    //border-top-color: lighten($color, 10%);
+    //border-bottom-color: darken($color, 10%);
+    //&:hover {
+    //    border-top-color: $color;
+    //    border-bottom-color: $color;
+    //}
 }
 
 .linebox--bakerloo {

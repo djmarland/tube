@@ -1,19 +1,11 @@
 home:
   path:     /
-  defaults: { _controller: App:Home:index }
+  defaults: { _controller: App:Main:index }
 
-#styleguide:
-#  path:     /styleguide
-#  defaults: { _controller: AppBundle:Home:styleguide }
-#
-#search:
-#  path:     /search
-#  defaults: { _controller: AppBundle:Search:list }
-#
-#securities_list:
-#  path:     /securities
-#  defaults: { _controller: AppBundle:Securities:list }
-#
-#securities_show:
-#  path:     /securities/{isin}
-#  defaults: { _controller: AppBundle:Securities:show }
+settings:
+  path:     /settings
+  defaults: { _controller: App:Main:settings }
+
+line:
+  path:     /{line}
+  defaults: { _controller: App:Main:line }

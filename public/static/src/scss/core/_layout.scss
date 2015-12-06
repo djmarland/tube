@@ -1,0 +1,58 @@
+/* Global page layout */
+
+body {
+    padding-top: 52px;
+}
+
+.app {
+
+}
+
+.app__header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+.app__main {
+}
+
+.main {
+    margin-top: $grid-unit-small;
+}
+
+.statusbox {
+    min-height: 80px;
+}
+
+@include mq($from: l) {
+    body {
+        padding-top: 0;
+    }
+    .main {
+        margin-top: $grid-unit-large;
+    }
+    .app {
+        @include flex-fill();
+        @include flex-wrap();
+        @include flex-direction(row);
+        @include flex-align(stretch);
+    }
+    .app__header {
+        position: relative;
+    }
+    .app__nav {
+        @include order(1);
+        @include flex(0 0 320px);
+    }
+    .app__main {
+        @include order(2);
+        @include flex(1);
+    }
+    .statusbox {
+        height: (100/14) * 1vh;
+        min-height: 48px;
+    }
+}
