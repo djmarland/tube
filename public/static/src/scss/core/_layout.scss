@@ -56,3 +56,12 @@ body {
         min-height: 48px;
     }
 }
+
+@media (min-height: 42em) and (min-width: 768px) {
+    .app__nav-list {
+        position: fixed;
+        width: 320px;
+        top: 0;
+        left: 0;
+    }
+}

@@ -39,6 +39,11 @@
 {% block body %}{% endblock %}
 {% block footer %}
             </div>
+            <div id="ad" class="page-limit">
+                <div class="g-unit card card--padded">
+                    <h2 class="g-unit e">Advertisment (<a href="/settings#ads">Why?</a>)</h2>
+                </div>
+            </div>
         </main>
         <footer class="footer g-unit">
             <div class="page-limit text--">Built by <a href="http://rland.me.uk">David Marland</a>.
@@ -46,7 +51,7 @@
         </footer>
     </div>
     <nav class="app__nav">
-        <ol class="list--unstyled">
+        <ol class="app__nav-list list--unstyled">
             {% for line in lines %}
                 <li>
                     <a href="/{{ line.key }}" class="statusbox linebox linebox--{{ line.key }}">
