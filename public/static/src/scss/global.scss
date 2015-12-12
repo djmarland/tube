@@ -12,6 +12,7 @@
 //@import 'atoms/island';
 @import 'atoms/list';
 //@import 'atoms/loading';
+@import 'atoms/text';
 @import 'atoms/visibility';
 
 // Molecules
@@ -20,5 +21,7 @@
 
 // Organisms
 @import 'organisms/header';
+@import 'organisms/intro';
+@import 'organisms/footer';
 @import 'organisms/statusbox';
 

@@ -2,15 +2,17 @@
 
 namespace TubeService\Service;
 
-//use DatabaseBundle\Mapper\MapperFactory;
-//use Doctrine\ORM\EntityManager;
-//use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
 use GuzzleHttp\ClientInterface;
+use TubeService\Data\Database\Mapper\MapperFactory;
 use TubeService\Data\TFL\Query\StatusQuery;
 
 abstract class Service
 {
+    const TBL = 'tbl';
+
     protected $httpClient;
 
     protected $entityManager;
@@ -19,18 +21,10 @@ abstract class Service
 
     public function __construct(
         ClientInterface $httpClient,
-        EntityManager $entityManager = null,
-        MapperFactory $mapperFactory = null
+        EntityManager $entityManager
     ) {
         $this->httpClient = $httpClient;
         $this->entityManager = $entityManager;
-        $this->mapperFactory = $mapperFactory;
-    }
-
-    public function getEntity(string $name): EntityRepository
-    {
-        return $this->entityManager
-            ->getRepository('DatabaseBundle:' . $name);
     }
 
     public function getTFLStatusQuery(): StatusQuery
@@ -38,16 +32,32 @@ abstract class Service
         return new StatusQuery(
             $this->httpClient,
             'dd159361',
-            'c5657f306c94676a4f297ec22c070fc3'
+            'c5657f306c94676a4f297ec22c070fc3' // @todo - reset this key with TFL (silly me checked it into github)
         );
+    }
+
+    public function getEntity(string $name): EntityRepository
+    {
+        return $this->entityManager
+            ->getRepository('TubeService:' . $name);
     }
 
     public function getQueryBuilder(string $name) {
         $entity = $this->getEntity($name);
-        return $entity->createQueryBuilder('tbl');
+        return $entity->createQueryBuilder(self::TBL);
     }
 
-    public function getDomainModels($items)
+    public function getServiceResultFromDatabaseResult($result)
+    {
+        $data = $this->getDomainModelsFromDatabaseResult($result);
+
+        if ($data) {
+            return new ServiceResult($data);
+        }
+        return new ServiceResultEmpty();
+    }
+
+    private function getDomainModelsFromDatabaseResult($items)
     {
         if (!$items) {
             return null;
@@ -56,28 +66,20 @@ abstract class Service
             $items = [$items];
         }
 
+        $mapperFactory = new MapperFactory();
+
         $domainModels = array();
         foreach ($items as $item) {
-            $mapper = $this->mapperFactory->getMapper($item);
+            $mapper = $mapperFactory->getMapper($item);
             $domainModels[] = $mapper->getDomainModel($item);
         }
         return $domainModels;
     }
 
-    public function getOffset(
+    public function calculateOffset(
         int $limit,
         int $page
     ): int {
         return ($limit * ($page - 1));
-    }
-
-    public function getServiceResult($result)
-    {
-        $data = $this->getDomainModels($result);
-
-        if ($data) {
-            return new ServiceResult($data);
-        }
-        return new ServiceResultEmpty();
     }
 }

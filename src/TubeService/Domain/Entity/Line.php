@@ -15,9 +15,12 @@ class Line extends Entity
         ID $id,
         DateTime $createdAt,
         DateTime $updatedAt,
-        $key,
-        $name,
-        $statuses
+        string $URLKey,
+        string $TFLKey,
+        string $name,
+        string $shortName,
+        int $displayOrder,
+        Status $latestStatus = null
     ) {
         parent::__construct(
             $id,
@@ -26,8 +29,11 @@ class Line extends Entity
         );
 
         $this->name = $name;
-        $this->key = $key;
-        $this->statuses = $statuses;
+        $this->shortName = $shortName;
+        $this->URLKey = $URLKey;
+        $this->TFLKey = $TFLKey;
+        $this->displayOrder = $displayOrder;
+        $this->latestStatus = $latestStatus;
     }
 
     private $name;
@@ -37,27 +43,54 @@ class Line extends Entity
         return $this->name;
     }
 
-    private $key;
+    private $shortName;
 
-    public function getKey()
+    public function getShortName()
     {
-        return $this->key;
+        return $this->shortName;
     }
 
-    private $statuses;
+    private $URLKey;
 
-    public function getStatuses()
+    public function getURLKey()
     {
-        return $this->statuses;
+        return $this->URLKey;
     }
 
-    public function getStatus()
+    private $TFLKey;
+
+    public function getTFLKey()
     {
-        return implode(', ', $this->getStatuses());
+        return $this->TFLKey;
+    }
+
+    private $displayOrder;
+
+    public function getDisplayOrder()
+    {
+        return $this->displayOrder;
+    }
+
+    private $latestStatus;
+
+    public function getLatestStatus()
+    {
+        return $this->latestStatus;
     }
 
     public function isDisrupted()
     {
-        return ($this->getStatus() !== 'Good Service');
+        if ($this->latestStatus) {
+            return $this->latestStatus->isDisrupted();
+        }
+        return false;
+    }
+
+    public function getStatusSummary()
+    {
+        if ($this->latestStatus) {
+            return $this->latestStatus->getShortTitle();
+        }
+        return 'No Information';
     }
 }

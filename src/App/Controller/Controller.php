@@ -11,19 +11,20 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class Controller extends BaseController implements ControllerInterface
 {
     /**
-     * @var int
+     * @var array
      */
-    protected $currentPage = 1;
+    protected $appConfig;
+
 
     /**
      * @var MasterPresenter
      */
-    public $masterViewPresenter;
+    protected $masterViewPresenter;
 
     /**
      * @var Request
      */
-    public $request;
+    protected $request;
 
     /**
      * Setup common tasks for a controller
@@ -32,84 +33,31 @@ class Controller extends BaseController implements ControllerInterface
     public function initialize(Request $request)
     {
         $this->request = $request;
-        $this->masterViewPresenter = new MasterPresenter();
-        $this->toView('currentYear', date("Y"));
-        $this->setSearchContext();
+        $this->appConfig = $this->getParameter('app.config');
+        $this->masterViewPresenter = new MasterPresenter($this->appConfig);
     }
 
-    protected function getCurrentPage()
-    {
-        $page = $this->request->get('page', 1);
-
-        // must be an integer string
-        if (
-            strval(intval($page)) !== strval($page) ||
-            $page < 1
-        ) {
-            throw new HttpException(404, 'No such page value');
-        }
-        return (int)$page;
-    }
-
-    protected function setSearchContext()
-    {
-        $search = $this->request->get('q', null);
-        $this->toView('searchContext', $search);
-        $this->toView('searchAutofocus', null);
-        $this->toView('showMasthead', true);
-    }
-
-    /**
-     * @param int $total Total Results
-     * @param int $currentPage The current page value
-     * @param int $perPage How many per page
-     */
-    protected function setPagination(
-        $total,
-        $currentPage,
-        $perPage
-    ) {
-
-        $pagination = new PaginationPresenter(
-            $total,
-            $currentPage,
-            $perPage
-        );
-
-        if (!$pagination->isValid()) {
-            throw new HttpException(404, 'There are not this many pages');
-        }
-
-        $this->toView('pagination', $pagination);
-    }
-
-    /**
-     * Set values that make it to the view
-     * @param $key
-     * @param $value
-     * @param bool  $inFeed
-     * @return $this
-     */
     public function toView(
-        $key,
+        string $key,
         $value,
         $inFeed = true
-    ) {
+    ): Controller {
         $this->masterViewPresenter->set($key, $value, $inFeed);
         return $this;
     }
 
-    /**
-     * @param $key
-     * @return mixed
-     * @throws \AppBundle\Domain\Exception\DataNotSetException
-     */
-    public function fromView($key)
+    public function setTitle(string $title): Controller
+    {
+        $this->masterViewPresenter->setTitle($title);
+        return $this;
+    }
+
+    public function fromView(string $key)
     {
         return $this->masterViewPresenter->get($key);
     }
 
-    protected function renderTemplate($template)
+    protected function renderTemplate(string $template)
     {
         $format = $this->request->get('format', null);
         if ($format == 'json') {

@@ -10,4 +10,4 @@ services:
 
   app.services.line:
       class: TubeService\Service\LineService
-      arguments: ["@app.guzzle_client"]
+      arguments: ["@app.guzzle_client", "@doctrine.orm.default_entity_manager"]

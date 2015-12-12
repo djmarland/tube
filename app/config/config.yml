@@ -5,6 +5,8 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    app.config:
+        title: "TubeAlert"
 
 framework:
     #esi:             ~
@@ -58,11 +60,16 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
+        mappings:
+            TubeService:
+                dir:  %kernel.root_dir%/../src/TubeService/Data/Database/Entity
+                is_bundle: false
+                type: annotation
+                prefix: TubeService\Data\Database\Entity
 
 # Doctrine migrations
 doctrine_migrations:
-    dir_name: %kernel.root_dir%/DoctrineMigrations
-    namespace: Application\Migrations
+    dir_name: %kernel.root_dir%/../src/TubeService/Data/Database/Migration
+    namespace: TubeService\Data\Database\Migration
     table_name: migration_versions
     name: Application Migrations

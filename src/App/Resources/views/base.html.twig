@@ -2,8 +2,28 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>TubeStat</title>
+    <title>{{ meta.fullTitle }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/icons/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/icons/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/icons/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/icons/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180x180.png" />
+    <link rel="icon" href="/static/icons/favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-194x194.png" sizes="194x194" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="/static/icons/android-chrome-192x192.png" sizes="192x192" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16" />
+    <meta name="msapplication-TileColor" content="#383b3f" />
+    <meta name="msapplication-TileImage" content="/static/icons/mstile-144x144.png" />
+    <meta name="msapplication-square150x150logo" content="/static/icons/mstile-150x150.png" />
+    <meta name="msapplication-square310x310logo" content="/static/icons/mstile-310x310.png" />
+    <meta name="theme-color" content="#383b3f" />
     <style>
         {{ source('@public/css/global.css') }}
     </style>
@@ -20,7 +40,7 @@
     <div class="app__main">
         <header class="app__header header">
             <div class="header__logo">
-                <a href="/" id="js-back-logo">TubeStat</a>
+                <a href="/" id="js-back-logo">{{ meta.siteTitle }}</a>
             </div>
             <div class="header__back">
                 <a href="/" id="js-back" class="hidden">
@@ -33,32 +53,34 @@
                 </a>
             </div>
         </header>
-        <main class="main">
-            <div id="main-body" class="page-limit">
+        <div id="page">
+            <main class="main">
+                <div id="main-body" class="page-limit">
 {% endblock %}
 {% block body %}{% endblock %}
 {% block footer %}
-            </div>
-            <div id="ad" class="page-limit">
-                <div class="g-unit card card--padded">
-                    <h2 class="g-unit e">Advertisment (<a href="/settings#ads">Why?</a>)</h2>
                 </div>
-            </div>
-        </main>
-        <footer class="footer g-unit">
-            <div class="page-limit text--">Built by <a href="http://rland.me.uk">David Marland</a>.
-                Feedback: <a href="http://twitter.com/djmarland">@djmarland</a></div>
-        </footer>
+                <!--<div id="ad" class="page-limit">
+                    <div class="g-unit card card--padded">
+                        <h2 class="g-unit e">Advertisment (<a href="/settings#ads">Why?</a>)</h2>
+                    </div>
+                </div>-->
+            </main>
+            <footer class="footer g-unit">
+                <div class="page-limit footer__text">Built by <a href="http://rland.me.uk">David Marland</a>.
+                    Feedback: <a href="http://twitter.com/djmarland">@djmarland</a></div>
+            </footer>
+        </div>
     </div>
     <nav class="app__nav">
         <ol class="app__nav-list list--unstyled">
             {% for line in lines %}
                 <li>
-                    <a href="/{{ line.key }}" class="statusbox linebox linebox--{{ line.key }}">
+                    <a href="/{{ line.URLkey }}" class="statusbox linebox linebox--{{ line.URLkey }}">
                         <div class="statusbox__name">
                             {{ line.name }}
                             <br />
-                            {{ line.status }}
+                            {{ line.statusSummary }}
                         </div>
                         {% if line.isDisrupted %}
                             <div class="statusbox__alert">

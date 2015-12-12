@@ -12,58 +12,75 @@
     //}
 }
 
-.linebox--bakerloo {
+.linebox--bakerloo-line {
     $color: #AE6118;
     background: $color;
     @include bord($color);
 }
 
-.linebox--central {
+.linebox--central-line {
     $color: #E41F1F;
     background: $color;
     @include bord($color);
 }
 
-.linebox--circle {
+.linebox--circle-line {
     $color: #F8D42D;
     background: $color;
     color: #111;
     @include bord($color);
 }
 
-.linebox--district {
+.linebox--district-line {
     $color: #007229;
     background: $color;
     @include bord($color);
 }
 
-.linebox--dlr {
-    $color: #00BBB4;
-    background: $color;
-    @include bord($color);
-}
-
-.linebox--hammersmith-city {
+.linebox--hammersmith-city-line {
     $color: #E899A8;
     background: $color;
     @include bord($color);
     color: #111;
 }
 
-.linebox--jubilee {
+.linebox--jubilee-line {
     $color: #686E72;
     background: $color;
     @include bord($color);
 }
 
-.linebox--metropolitan {
+.linebox--metropolitan-line {
     $color: #893267;
     background: $color;
     @include bord($color);
 }
 
-.linebox--northern {
+.linebox--northern-line {
     $color: #000000;
+    background: $color;
+    @include bord($color);
+}
+
+.linebox--piccadilly-line {
+    $color: #0450A1;
+    background: $color;
+    @include bord($color);
+}
+.linebox--victoria-line {
+    $color: #009FE0;
+    background: $color;
+    @include bord($color);
+}
+.linebox--waterloo-city-line {
+    $color: #70C3CE;
+    background: $color;
+    @include bord($color);
+    color: #111;
+}
+
+.linebox--dlr {
+    $color: #00BBB4;
     background: $color;
     @include bord($color);
 }
@@ -73,22 +90,7 @@
     background: $color;
     @include bord($color);
 }
-.linebox--piccadilly {
-    $color: #0450A1;
-    background: $color;
-    @include bord($color);
-}
-.linebox--victoria {
-    $color: #009FE0;
-    background: $color;
-    @include bord($color);
-}
-.linebox--waterloo-city {
-    $color: #70C3CE;
-    background: $color;
-    @include bord($color);
-    color: #111;
-}
+
 .linebox--tfl-rail {
     $color: #0019a8;
     background: $color;
