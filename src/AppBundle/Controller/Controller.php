@@ -46,15 +46,15 @@ class Controller extends BaseController implements ControllerInterface
         return $this;
     }
 
+    public function fromView(string $key)
+    {
+        return $this->masterViewPresenter->get($key);
+    }
+
     public function setTitle(string $title): Controller
     {
         $this->masterViewPresenter->setTitle($title);
         return $this;
-    }
-
-    public function fromView(string $key)
-    {
-        return $this->masterViewPresenter->get($key);
     }
 
     protected function renderTemplate(string $template)
