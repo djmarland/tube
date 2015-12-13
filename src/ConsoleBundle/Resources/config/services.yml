@@ -1,0 +1,16 @@
+services:
+
+  console.guzzle_client:
+      class: GuzzleHttp\Client
+
+  console.services.tfl:
+      class: IngestService\Service\TFLService
+      arguments: ["@console.guzzle_client", "%%tfl_app_id%", "%%tfl_app_key%"]
+
+  console.services.update:
+      class: IngestService\Service\UpdateService
+      arguments: ["@doctrine.orm.default_entity_manager"]
+
+  console.services.line:
+      class: TubeService\Service\LineService
+      arguments: ["@doctrine.orm.default_entity_manager"]

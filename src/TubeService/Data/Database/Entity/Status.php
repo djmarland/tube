@@ -23,7 +23,7 @@ class Status extends Entity
     /** @ORM\Column(type="string", length=1000) */
     private $title;
 
-    /** @ORM\Column(type="string", length=10000) */
+    /** @ORM\Column(type="string", length=10000, nullable=true) */
     private $description;
 
 

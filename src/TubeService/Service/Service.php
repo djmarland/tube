@@ -5,35 +5,18 @@ namespace TubeService\Service;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
-use GuzzleHttp\ClientInterface;
 use TubeService\Data\Database\Mapper\MapperFactory;
-use TubeService\Data\TFL\Query\StatusQuery;
 
 abstract class Service
 {
     const TBL = 'tbl';
 
-    protected $httpClient;
-
     protected $entityManager;
 
-    protected $mapperFactory;
-
     public function __construct(
-        ClientInterface $httpClient,
         EntityManager $entityManager
     ) {
-        $this->httpClient = $httpClient;
         $this->entityManager = $entityManager;
-    }
-
-    public function getTFLStatusQuery(): StatusQuery
-    {
-        return new StatusQuery(
-            $this->httpClient,
-            'dd159361',
-            'c5657f306c94676a4f297ec22c070fc3' // @todo - reset this key with TFL (silly me checked it into github)
-        );
     }
 
     public function getEntity(string $name): EntityRepository

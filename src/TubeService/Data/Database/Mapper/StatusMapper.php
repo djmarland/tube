@@ -11,6 +11,12 @@ class StatusMapper extends Mapper
     {
         $id = new ID($item->getID());
 
+        $descriptions = null;
+        $description = $item->getDescription();
+        if ($description) {
+            $descriptions = explode('|', $description);
+        }
+
         $line = new Status(
             $id,
             $item->getCreatedAt(),
@@ -18,7 +24,7 @@ class StatusMapper extends Mapper
             $item->getIsDisrupted(),
             $item->getShortTitle(),
             $item->getTitle(),
-            $item->getDescription()
+            $descriptions
         );
         return $line;
     }

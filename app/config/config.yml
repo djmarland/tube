@@ -37,7 +37,7 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     paths:
-            "%kernel.root_dir%/../src/App/Presenter": App/Presenter
+            "%kernel.root_dir%/../src/AppBundle/Presenter": AppBundle/Presenter
             "%kernel.root_dir%/../public/static/dist/": public
 
 # Doctrine Configuration
@@ -67,9 +67,15 @@ doctrine:
                 type: annotation
                 prefix: TubeService\Data\Database\Entity
 
-# Doctrine migrations
-doctrine_migrations:
-    dir_name: %kernel.root_dir%/../src/TubeService/Data/Database/Migration
-    namespace: TubeService\Data\Database\Migration
-    table_name: migration_versions
-    name: Application Migrations
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+        console:
+            type:  console

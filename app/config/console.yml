@@ -1,0 +1,9 @@
+imports:
+    - { resource: config.yml }
+
+# Doctrine migrations
+doctrine_migrations:
+    dir_name: %kernel.root_dir%/../src/TubeService/Data/Database/Migration
+    namespace: TubeService\Data\Database\Migration
+    table_name: migration_versions
+    name: Application Migrations

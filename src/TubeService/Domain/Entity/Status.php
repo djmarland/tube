@@ -18,7 +18,7 @@ class Status extends Entity
         bool $isDisrupted,
         string $shortTitle,
         string $title,
-        string $description
+        $descriptions = null
     ) {
         parent::__construct(
             $id,
@@ -29,34 +29,37 @@ class Status extends Entity
         $this->isDisrupted = $isDisrupted;
         $this->shortTitle = $shortTitle;
         $this->title = $title;
-        $this->description = $description;
+        if (!is_null($descriptions) && !is_array($descriptions)) {
+            $descriptions = [$descriptions];
+        }
+        $this->descriptions = $descriptions;
     }
 
     private $isDisrupted;
 
-    public function isDisrupted()
+    public function isDisrupted(): bool
     {
         return $this->isDisrupted;
     }
 
     private $shortTitle;
 
-    public function getShortTitle()
+    public function getShortTitle(): string
     {
         return $this->shortTitle;
     }
 
     private $title;
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    private $description;
+    private $descriptions;
 
-    public function getDescription()
+    public function getDescriptions()
     {
-        return $this->description;
+        return $this->descriptions;
     }
 }

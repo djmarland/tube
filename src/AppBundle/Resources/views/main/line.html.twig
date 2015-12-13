@@ -1,0 +1,27 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+
+{% block body %}
+    <h1 class="g-unit card card--padded linebox linebox--{{ line.URLkey }}">{{ line.name }}</h1>
+    <div class="g-unit card card--padded">
+        {% if line.latestStatus %}
+                <h2 class="g-unit">{{ line.latestStatus.title }}</h2>
+                {% if line.isDisrupted %}
+                    {% for description in line.latestStatus.descriptions %}
+                        <p class="g-unit">{{ description }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p>Last updated: {{ line.latestStatus.updatedAt.format('D j M Y H:i') }}</p>
+        {% else %}
+            <h2>No Information</h2>
+        {% endif %}
+    </div>
+    <div class="g-unit card card--padded">
+        <h2 class="g-unit">Notifications</h2>
+        <p>Your browser does not support notifications. <a href="/settings#notifications">More info</a></p>
+    </div>
+    <!--<div class="g-unit card card--padded">
+        <h2 class="g-unit">Service History</h2>
+        <p>There have been <strong>32</strong> disruptions in the last 60 days</p>
+    </div>-->
+{% endblock %}

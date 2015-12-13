@@ -1,0 +1,11 @@
+home:
+  path:     /
+  defaults: { _controller: AppBundle:Main:index }
+
+settings:
+  path:     /settings
+  defaults: { _controller: AppBundle:Main:settings }
+
+line:
+  path:     /{line}
+  defaults: { _controller: AppBundle:Main:line }

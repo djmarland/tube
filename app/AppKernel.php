@@ -5,6 +5,8 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppKernel extends Kernel
 {
+    const CONFIG_FILE = 'config';
+
     public function registerBundles()
     {
         $bundles = array(
@@ -12,8 +14,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
-            new App\App()
+            new AppBundle\AppBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -26,6 +27,11 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
+        $suffix = '';
+        $env = $this->getEnvironment();
+        if (in_array($env, ['dev','test'])) {
+            $suffix = '_' . $env;
+        }
+        $loader->load($this->getRootDir().'/config/' . static::CONFIG_FILE . $suffix . '.yml');
     }
 }

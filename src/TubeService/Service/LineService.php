@@ -25,13 +25,4 @@ class LineService extends Service
         $result = $qb->getQuery()->getResult();
         return $this->getServiceResultFromDatabaseResult($result);
     }
-
-    public function findAllFromOrigin(): ServiceResultInterface {
-        $query = $this->getTFLStatusQuery();
-        $lines = $query->getAllLines();
-        if ($lines) {
-            return new ServiceResult($lines);
-        }
-        return new ServiceResultEmpty();
-    }
 }
