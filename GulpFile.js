@@ -3,6 +3,7 @@
 var gulp = require('gulp'),
     sass = require('gulp-sass'),
     uglify = require('gulp-uglify'),
+    //babel = require('gulp-babel'),
     staticPathSrc = 'public/static/src/',
     staticPathDist = 'public/static/dist/';
 
@@ -14,7 +15,10 @@ gulp.task('sass', function() {
 
 gulp.task('js', function() {
     gulp.src(staticPathSrc + 'js/**/*.js')
-        .pipe(uglify())
+        //.pipe(babel({
+        //    presets: ['es2015']
+        //}))
+        //.pipe(uglify())
         .pipe(gulp.dest(staticPathDist + 'js/'))
 });
 

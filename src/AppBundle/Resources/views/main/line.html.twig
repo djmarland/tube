@@ -1,13 +1,14 @@
 {% extends 'AppBundle::base.html.twig' %}
 
+{% block bodyView %}line{% endblock %}
 
 {% block body %}
     <div data-js="line-page">
-        <h1 class="g-unit card card--padded linebox linebox--{{ line.URLkey }}" data-js="line-title">{{ line.name }}</h1>
+        <h1 class="g-unit card card--padded linebox" data-linebox="{{ line.URLkey }}" data-js="line-title">{{ line.name }}</h1>
         <div class="grid">
             <div class="g 1/2@xl 3/5@xxl">
             <div class="card">
-                <div class="card__body card--padded" data-js="status-panel">
+                <div class="card__body card--padded"  data-js="line-status-panel">
                 {% if line.latestStatus %}
                         <h2 class="g-unit">{{ line.latestStatus.title }}</h2>
                         {% if line.isDisrupted %}
@@ -22,7 +23,7 @@
                 <div class="card__foot">
                     <p class="f card__foot-line">
                         <strong>Last updated:</strong>
-                        <span>{{ line.latestStatus.updatedAtFormatted }}</span></p>
+                        <span data-js="line-updated">{{ line.latestStatus.updatedAtFormatted }}</span></p>
                 </div>
             </div>
             </div>
@@ -38,7 +39,7 @@
                         </div>
                     </div>
                     <div class="card__foot text--right">
-                        <p class="f"><button class="btn" disabled data-js="button-save">Save</button></p>
+                        <p class="f"><button class="btn" disabled  data-js="notifications-save">Save</button></p>
                     </div>
                 </div>
             </div>

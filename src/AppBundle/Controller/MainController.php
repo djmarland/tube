@@ -10,11 +10,13 @@ class MainController extends Controller
     public function initialize(Request $request)
     {
         parent::initialize($request);
+        $this->toView('isHomepage', false);
         $this->toView('lines', $this->getLines());
     }
 
     public function indexAction()
     {
+        $this->toView('isHomepage', true);
         return $this->renderTemplate('main:index');
     }
 

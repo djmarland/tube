@@ -26,8 +26,17 @@ body {
 .statusbox {
     min-height: 80px;
 }
-.homepage .page {
-    display: none;
+body[data-view="homepage"] {
+    .page,
+    #js-back {
+        display: none;
+    }
+}
+body[data-view="line"],
+body[data-view="settings"] {
+    .app__nav {
+        display: none;
+    }
 }
 
 @include mq($from: l) {
@@ -38,7 +47,7 @@ body {
         margin-top: $grid-unit-large;
     }
 
-    .homepage .page {
+    body[data-view="homepage"] .page {
         display: block;
     }
     .app {
@@ -61,6 +70,15 @@ body {
     .statusbox {
         height: (100/14) * 1vh;
         min-height: 48px;
+    }
+    #js-back {
+        display: none;
+    }
+    body[data-view="line"],
+    body[data-view="settings"] {
+        .app__nav {
+            display: block;
+        }
     }
 }
 

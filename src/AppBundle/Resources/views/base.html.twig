@@ -14,11 +14,10 @@
     <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152x152.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180x180.png" />
     <link rel="icon" href="/static/icons/favicon.ico" type="image/x-icon" />
-    <link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="/static/icons/favicon-194x194.png" sizes="194x194" />
-    <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/png" href="/static/icons/android-chrome-192x192.png" sizes="192x192" />
     <link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-194x194.png" sizes="194x194" />
     <meta name="msapplication-TileColor" content="#383b3f" />
     <meta name="msapplication-TileImage" content="/static/icons/mstile-144x144.png" />
     <meta name="msapplication-square150x150logo" content="/static/icons/mstile-150x150.png" />
@@ -28,7 +27,7 @@
         {{ source('@static/css/global.css') }}
     </style>
 </head>
-<body class="{% block bodyClass %}{% endblock %}">
+<body data-view="{% block bodyView %}{% endblock %}">
 <svg style="display: none">
     <symbol id="icon-chevron-left" viewBox="0 0 16 24"><path d="M14.88 2.878L5.756 12l9.124 9.142-2.81 2.808L.12 12 12.07.05l2.81 2.828z"/></symbol>
     <symbol id="icon-chevron-right" viewBox="0 0 16 24"><path d="M.12 21.122L9.244 12 .12 2.858 2.93.05 14.88 12 2.93 23.95.12 21.122z"/></symbol>
@@ -43,7 +42,7 @@
                 <a href="/" id="js-back-logo">{{ meta.siteTitle }}</a>
             </div>
             <div class="header__back">
-                <a href="/" id="js-back" class="hidden">
+                <a href="/" id="js-back">
                     <svg><use xlink:href="#icon-chevron-left" /></svg>
                 </a>
             </div>
@@ -55,7 +54,7 @@
         </header>
         <div class="page" id="page">
             <main class="main">
-                <div id="main-body" class="page-limit">
+                <div id="main-body" class="page-limit" data-js="main-body">
 {% endblock %}
 {% block body %}{% endblock %}
 {% block footer %}
@@ -76,7 +75,7 @@
         <ol class="app__nav-list list--unstyled">
             {% for line in lines %}
                 <li>
-                    <a data-js="linebox--{{ line.URLkey }}" href="/{{ line.URLkey }}" class="statusbox linebox linebox--{{ line.URLkey }}">
+                    <a data-js="linebox" data-linebox="{{ line.URLkey }}" href="/{{ line.URLkey }}" class="statusbox linebox linebox--{{ line.URLkey }}">
                         <div class="statusbox__name">
                             {{ line.name }}
                             <br />
