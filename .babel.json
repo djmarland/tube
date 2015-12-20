@@ -1,0 +1,182 @@
+{
+  "{\"filename\":\"/home/vagrant/gulpfile.babel.js\",\"env\":{},\"retainLines\":false,\"highlightCode\":true,\"suppressDeprecationMessages\":false,\"presets\":[],\"plugins\":[[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],{\"async\":false,\"asyncGenerators\":false}]],\"ignore\":[],\"code\":true,\"metadata\":true,\"ast\":true,\"comments\":true,\"compact\":\"auto\",\"minified\":false,\"babelrc\":true,\"sourceType\":\"module\",\"moduleIds\":false}:6.3.21": {
+    "metadata": {
+      "usedHelpers": [
+        "interopRequireDefault"
+      ],
+      "marked": [],
+      "modules": {
+        "imports": [
+          {
+            "source": "gulp",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "gulp"
+              }
+            ]
+          },
+          {
+            "source": "gulp-sass",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "sass"
+              }
+            ]
+          },
+          {
+            "source": "gulp-uglify",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "uglify"
+              }
+            ]
+          }
+        ],
+        "exports": {
+          "exported": [],
+          "specifiers": []
+        }
+      }
+    },
+    "options": {
+      "filename": "/home/vagrant/gulpfile.babel.js",
+      "filenameRelative": "/home/vagrant/gulpfile.babel.js",
+      "env": {},
+      "retainLines": false,
+      "highlightCode": true,
+      "suppressDeprecationMessages": false,
+      "presets": [],
+      "plugins": [
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          {
+            "async": false,
+            "asyncGenerators": false
+          }
+        ]
+      ],
+      "ignore": [],
+      "code": true,
+      "metadata": true,
+      "ast": false,
+      "comments": true,
+      "compact": "auto",
+      "minified": false,
+      "sourceMap": "both",
+      "sourceMaps": "both",
+      "sourceMapTarget": "gulpfile.babel.js",
+      "sourceFileName": "gulpfile.babel.js",
+      "babelrc": false,
+      "sourceType": "module",
+      "moduleIds": false,
+      "basename": "gulpfile.babel"
+    },
+    "ignored": false,
+    "code": "'use strict';\n\nvar _gulp = require('gulp');\n\nvar _gulp2 = _interopRequireDefault(_gulp);\n\nvar _gulpSass = require('gulp-sass');\n\nvar _gulpSass2 = _interopRequireDefault(_gulpSass);\n\nvar _gulpUglify = require('gulp-uglify');\n\nvar _gulpUglify2 = _interopRequireDefault(_gulpUglify);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar staticPath = {\n    src: 'public/static/src/',\n    dest: 'public/static/dist/'\n};\n\nvar sassPaths = {\n    src: staticPath.src + 'scss/**/*.scss',\n    dest: staticPath.dest + 'css/'\n};\n\nvar jsPaths = {\n    src: staticPath.src + 'js/**/*.js',\n    dest: staticPath.dest + 'js/'\n};\n\n_gulp2.default.task('sass', function () {\n    return _gulp2.default.src(sassPaths.src).pipe((0, _gulpSass2.default)({ outputStyle: 'compressed' }).on('error', _gulpSass2.default.logError)).pipe(_gulp2.default.dest(sassPaths.dest));\n});\n\n_gulp2.default.task('js', function () {\n    return _gulp2.default.src(jsPaths.src).pipe((0, _gulpUglify2.default)()).pipe(_gulp2.default.dest(jsPaths.dest));\n});\n\n_gulp2.default.task('default', ['sass', 'js']);\n\n_gulp2.default.task('watch', function () {\n    _gulp2.default.watch(sassPaths.src, ['sass']);\n    _gulp2.default.watch(jsPaths.src + 'js/**/*.js', ['js']);\n});\n\n//\n//gulp.task('styles', () => {\n//    return gulp.src(paths.src)\n//        .pipe(sourcemaps.init())\n//        .pipe(sass.sync().on('error', plugins.sass.logError))\n//        .pipe(autoprefixer())\n//        .pipe(sourcemaps.write('.'))\n//        .pipe(gulp.dest(paths.dest));\n//});\n\n//'use strict';\n//\n//var gulp = require('gulp'),\n//    sass = require('gulp-sass'),\n//    uglify = require('gulp-uglify'),\n//    staticPathSrc = 'public/static/src/',\n//    staticPathDist = 'public/static/dist/';\n//\n//gulp.task('sass', function() {\n//    gulp.src(staticPathSrc + 'scss/**/*.scss')\n//        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))\n//        .pipe(gulp.dest(staticPathDist + 'css/'))\n//});\n//\n//gulp.task('js', function() {\n//    gulp.src(staticPathSrc + 'js/**/*.js')\n//        .pipe(uglify())\n//        .pipe(gulp.dest(staticPathDist + 'js/'))\n//});\n//\n//gulp.task('default', ['sass', 'js']);\n//\n//gulp.task('watch',function() {\n//    gulp.watch(staticPathSrc + 'scss/**/*.scss',['sass']);\n//    gulp.watch(staticPathSrc + 'js/**/*.js',['js']);\n//});\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImd1bHBmaWxlLmJhYmVsLmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLFlBQVksQ0FBQzs7Ozs7Ozs7Ozs7Ozs7OztBQU1iLElBQU0sVUFBVSxHQUFHO0FBQ2YsT0FBRyxFQUFFLG9CQUFvQjtBQUN6QixRQUFJLEVBQUUscUJBQXFCO0NBQzlCLENBQUM7O0FBRUYsSUFBTSxTQUFTLEdBQUc7QUFDZCxPQUFHLEVBQUUsVUFBVSxDQUFDLEdBQUcsR0FBRyxnQkFBZ0I7QUFDdEMsUUFBSSxFQUFFLFVBQVUsQ0FBQyxJQUFJLEdBQUcsTUFBTTtDQUNqQyxDQUFDOztBQUVGLElBQU0sT0FBTyxHQUFHO0FBQ1osT0FBRyxFQUFFLFVBQVUsQ0FBQyxHQUFHLEdBQUcsWUFBWTtBQUNsQyxRQUFJLEVBQUUsVUFBVSxDQUFDLElBQUksR0FBRyxLQUFLO0NBQ2hDLENBQUM7O0FBRUYsZUFBSyxJQUFJLENBQUMsTUFBTSxFQUFFLFlBQU07QUFDcEIsV0FBTyxlQUFLLEdBQUcsQ0FBQyxTQUFTLENBQUMsR0FBRyxDQUFDLENBQ3pCLElBQUksQ0FBQyx3QkFBSyxFQUFDLFdBQVcsRUFBRSxZQUFZLEVBQUMsQ0FBQyxDQUFDLEVBQUUsQ0FBQyxPQUFPLEVBQUUsbUJBQUssUUFBUSxDQUFDLENBQUMsQ0FDbEUsSUFBSSxDQUFDLGVBQUssSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsQ0FBQyxDQUFDO0NBQ3hDLENBQUMsQ0FBQzs7QUFFSCxlQUFLLElBQUksQ0FBQyxJQUFJLEVBQUUsWUFBTTtBQUNsQixXQUFPLGVBQUssR0FBRyxDQUFDLE9BQU8sQ0FBQyxHQUFHLENBQUMsQ0FDdkIsSUFBSSxDQUFDLDJCQUFRLENBQUMsQ0FDZCxJQUFJLENBQUMsZUFBSyxJQUFJLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxDQUFDLENBQUM7Q0FDdEMsQ0FBQyxDQUFDOztBQUVILGVBQUssSUFBSSxDQUFDLFNBQVMsRUFBRSxDQUFDLE1BQU0sRUFBRSxJQUFJLENBQUMsQ0FBQyxDQUFDOztBQUVyQyxlQUFLLElBQUksQ0FBQyxPQUFPLEVBQUUsWUFBTTtBQUNyQixtQkFBSyxLQUFLLENBQUMsU0FBUyxDQUFDLEdBQUcsRUFBQyxDQUFDLE1BQU0sQ0FBQyxDQUFDLENBQUM7QUFDbkMsbUJBQUssS0FBSyxDQUFDLE9BQU8sQ0FBQyxHQUFHLEdBQUcsWUFBWSxFQUFDLENBQUMsSUFBSSxDQUFDLENBQUMsQ0FBQztDQUNqRCxDQUFDOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFDIiwiZmlsZSI6Imd1bHBmaWxlLmJhYmVsLmpzIiwic291cmNlc0NvbnRlbnQiOlsiJ3VzZSBzdHJpY3QnO1xuXG5pbXBvcnQgZ3VscCBmcm9tICdndWxwJztcbmltcG9ydCBzYXNzIGZyb20gJ2d1bHAtc2Fzcyc7XG5pbXBvcnQgdWdsaWZ5IGZyb20gJ2d1bHAtdWdsaWZ5JztcblxuY29uc3Qgc3RhdGljUGF0aCA9IHtcbiAgICBzcmM6ICdwdWJsaWMvc3RhdGljL3NyYy8nLFxuICAgIGRlc3Q6ICdwdWJsaWMvc3RhdGljL2Rpc3QvJ1xufTtcblxuY29uc3Qgc2Fzc1BhdGhzID0ge1xuICAgIHNyYzogc3RhdGljUGF0aC5zcmMgKyAnc2Nzcy8qKi8qLnNjc3MnLFxuICAgIGRlc3Q6IHN0YXRpY1BhdGguZGVzdCArICdjc3MvJ1xufTtcblxuY29uc3QganNQYXRocyA9IHtcbiAgICBzcmM6IHN0YXRpY1BhdGguc3JjICsgJ2pzLyoqLyouanMnLFxuICAgIGRlc3Q6IHN0YXRpY1BhdGguZGVzdCArICdqcy8nXG59O1xuXG5ndWxwLnRhc2soJ3Nhc3MnLCAoKSA9PiB7XG4gICAgcmV0dXJuIGd1bHAuc3JjKHNhc3NQYXRocy5zcmMpXG4gICAgICAgIC5waXBlKHNhc3Moe291dHB1dFN0eWxlOiAnY29tcHJlc3NlZCd9KS5vbignZXJyb3InLCBzYXNzLmxvZ0Vycm9yKSlcbiAgICAgICAgLnBpcGUoZ3VscC5kZXN0KHNhc3NQYXRocy5kZXN0KSk7XG59KTtcblxuZ3VscC50YXNrKCdqcycsICgpID0+IHtcbiAgICByZXR1cm4gZ3VscC5zcmMoanNQYXRocy5zcmMpXG4gICAgICAgIC5waXBlKHVnbGlmeSgpKVxuICAgICAgICAucGlwZShndWxwLmRlc3QoanNQYXRocy5kZXN0KSk7XG59KTtcblxuZ3VscC50YXNrKCdkZWZhdWx0JywgWydzYXNzJywgJ2pzJ10pO1xuXG5ndWxwLnRhc2soJ3dhdGNoJywgKCkgPT4ge1xuICAgIGd1bHAud2F0Y2goc2Fzc1BhdGhzLnNyYyxbJ3Nhc3MnXSk7XG4gICAgZ3VscC53YXRjaChqc1BhdGhzLnNyYyArICdqcy8qKi8qLmpzJyxbJ2pzJ10pO1xufSk7XG5cbi8vXG4vL2d1bHAudGFzaygnc3R5bGVzJywgKCkgPT4ge1xuLy8gICAgcmV0dXJuIGd1bHAuc3JjKHBhdGhzLnNyYylcbi8vICAgICAgICAucGlwZShzb3VyY2VtYXBzLmluaXQoKSlcbi8vICAgICAgICAucGlwZShzYXNzLnN5bmMoKS5vbignZXJyb3InLCBwbHVnaW5zLnNhc3MubG9nRXJyb3IpKVxuLy8gICAgICAgIC5waXBlKGF1dG9wcmVmaXhlcigpKVxuLy8gICAgICAgIC5waXBlKHNvdXJjZW1hcHMud3JpdGUoJy4nKSlcbi8vICAgICAgICAucGlwZShndWxwLmRlc3QocGF0aHMuZGVzdCkpO1xuLy99KTtcblxuLy8ndXNlIHN0cmljdCc7XG4vL1xuLy92YXIgZ3VscCA9IHJlcXVpcmUoJ2d1bHAnKSxcbi8vICAgIHNhc3MgPSByZXF1aXJlKCdndWxwLXNhc3MnKSxcbi8vICAgIHVnbGlmeSA9IHJlcXVpcmUoJ2d1bHAtdWdsaWZ5JyksXG4vLyAgICBzdGF0aWNQYXRoU3JjID0gJ3B1YmxpYy9zdGF0aWMvc3JjLycsXG4vLyAgICBzdGF0aWNQYXRoRGlzdCA9ICdwdWJsaWMvc3RhdGljL2Rpc3QvJztcbi8vXG4vL2d1bHAudGFzaygnc2FzcycsIGZ1bmN0aW9uKCkge1xuLy8gICAgZ3VscC5zcmMoc3RhdGljUGF0aFNyYyArICdzY3NzLyoqLyouc2NzcycpXG4vLyAgICAgICAgLnBpcGUoc2Fzcyh7b3V0cHV0U3R5bGU6ICdjb21wcmVzc2VkJ30pLm9uKCdlcnJvcicsIHNhc3MubG9nRXJyb3IpKVxuLy8gICAgICAgIC5waXBlKGd1bHAuZGVzdChzdGF0aWNQYXRoRGlzdCArICdjc3MvJykpXG4vL30pO1xuLy9cbi8vZ3VscC50YXNrKCdqcycsIGZ1bmN0aW9uKCkge1xuLy8gICAgZ3VscC5zcmMoc3RhdGljUGF0aFNyYyArICdqcy8qKi8qLmpzJylcbi8vICAgICAgICAucGlwZSh1Z2xpZnkoKSlcbi8vICAgICAgICAucGlwZShndWxwLmRlc3Qoc3RhdGljUGF0aERpc3QgKyAnanMvJykpXG4vL30pO1xuLy9cbi8vZ3VscC50YXNrKCdkZWZhdWx0JywgWydzYXNzJywgJ2pzJ10pO1xuLy9cbi8vZ3VscC50YXNrKCd3YXRjaCcsZnVuY3Rpb24oKSB7XG4vLyAgICBndWxwLndhdGNoKHN0YXRpY1BhdGhTcmMgKyAnc2Nzcy8qKi8qLnNjc3MnLFsnc2FzcyddKTtcbi8vICAgIGd1bHAud2F0Y2goc3RhdGljUGF0aFNyYyArICdqcy8qKi8qLmpzJyxbJ2pzJ10pO1xuLy99KTsiXX0=",
+    "ast": null,
+    "map": {
+      "version": 3,
+      "sources": [
+        "gulpfile.babel.js"
+      ],
+      "names": [],
+      "mappings": "AAAA,YAAY,CAAC;;;;;;;;;;;;;;;;AAMb,IAAM,UAAU,GAAG;AACf,OAAG,EAAE,oBAAoB;AACzB,QAAI,EAAE,qBAAqB;CAC9B,CAAC;;AAEF,IAAM,SAAS,GAAG;AACd,OAAG,EAAE,UAAU,CAAC,GAAG,GAAG,gBAAgB;AACtC,QAAI,EAAE,UAAU,CAAC,IAAI,GAAG,MAAM;CACjC,CAAC;;AAEF,IAAM,OAAO,GAAG;AACZ,OAAG,EAAE,UAAU,CAAC,GAAG,GAAG,YAAY;AAClC,QAAI,EAAE,UAAU,CAAC,IAAI,GAAG,KAAK;CAChC,CAAC;;AAEF,eAAK,IAAI,CAAC,MAAM,EAAE,YAAM;AACpB,WAAO,eAAK,GAAG,CAAC,SAAS,CAAC,GAAG,CAAC,CACzB,IAAI,CAAC,wBAAK,EAAC,WAAW,EAAE,YAAY,EAAC,CAAC,CAAC,EAAE,CAAC,OAAO,EAAE,mBAAK,QAAQ,CAAC,CAAC,CAClE,IAAI,CAAC,eAAK,IAAI,CAAC,SAAS,CAAC,IAAI,CAAC,CAAC,CAAC;CACxC,CAAC,CAAC;;AAEH,eAAK,IAAI,CAAC,IAAI,EAAE,YAAM;AAClB,WAAO,eAAK,GAAG,CAAC,OAAO,CAAC,GAAG,CAAC,CACvB,IAAI,CAAC,2BAAQ,CAAC,CACd,IAAI,CAAC,eAAK,IAAI,CAAC,OAAO,CAAC,IAAI,CAAC,CAAC,CAAC;CACtC,CAAC,CAAC;;AAEH,eAAK,IAAI,CAAC,SAAS,EAAE,CAAC,MAAM,EAAE,IAAI,CAAC,CAAC,CAAC;;AAErC,eAAK,IAAI,CAAC,OAAO,EAAE,YAAM;AACrB,mBAAK,KAAK,CAAC,SAAS,CAAC,GAAG,EAAC,CAAC,MAAM,CAAC,CAAC,CAAC;AACnC,mBAAK,KAAK,CAAC,OAAO,CAAC,GAAG,GAAG,YAAY,EAAC,CAAC,IAAI,CAAC,CAAC,CAAC;CACjD,CAAC;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAC",
+      "file": "gulpfile.babel.js",
+      "sourcesContent": [
+        "'use strict';\n\nimport gulp from 'gulp';\nimport sass from 'gulp-sass';\nimport uglify from 'gulp-uglify';\n\nconst staticPath = {\n    src: 'public/static/src/',\n    dest: 'public/static/dist/'\n};\n\nconst sassPaths = {\n    src: staticPath.src + 'scss/**/*.scss',\n    dest: staticPath.dest + 'css/'\n};\n\nconst jsPaths = {\n    src: staticPath.src + 'js/**/*.js',\n    dest: staticPath.dest + 'js/'\n};\n\ngulp.task('sass', () => {\n    return gulp.src(sassPaths.src)\n        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))\n        .pipe(gulp.dest(sassPaths.dest));\n});\n\ngulp.task('js', () => {\n    return gulp.src(jsPaths.src)\n        .pipe(uglify())\n        .pipe(gulp.dest(jsPaths.dest));\n});\n\ngulp.task('default', ['sass', 'js']);\n\ngulp.task('watch', () => {\n    gulp.watch(sassPaths.src,['sass']);\n    gulp.watch(jsPaths.src + 'js/**/*.js',['js']);\n});\n\n//\n//gulp.task('styles', () => {\n//    return gulp.src(paths.src)\n//        .pipe(sourcemaps.init())\n//        .pipe(sass.sync().on('error', plugins.sass.logError))\n//        .pipe(autoprefixer())\n//        .pipe(sourcemaps.write('.'))\n//        .pipe(gulp.dest(paths.dest));\n//});\n\n//'use strict';\n//\n//var gulp = require('gulp'),\n//    sass = require('gulp-sass'),\n//    uglify = require('gulp-uglify'),\n//    staticPathSrc = 'public/static/src/',\n//    staticPathDist = 'public/static/dist/';\n//\n//gulp.task('sass', function() {\n//    gulp.src(staticPathSrc + 'scss/**/*.scss')\n//        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))\n//        .pipe(gulp.dest(staticPathDist + 'css/'))\n//});\n//\n//gulp.task('js', function() {\n//    gulp.src(staticPathSrc + 'js/**/*.js')\n//        .pipe(uglify())\n//        .pipe(gulp.dest(staticPathDist + 'js/'))\n//});\n//\n//gulp.task('default', ['sass', 'js']);\n//\n//gulp.task('watch',function() {\n//    gulp.watch(staticPathSrc + 'scss/**/*.scss',['sass']);\n//    gulp.watch(staticPathSrc + 'js/**/*.js',['js']);\n//});"
+      ]
+    },
+    "mtime": 1450626751000
+  }
+}

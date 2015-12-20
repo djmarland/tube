@@ -53,7 +53,7 @@
                 </a>
             </div>
         </header>
-        <div id="page">
+        <div class="page" id="page">
             <main class="main">
                 <div id="main-body" class="page-limit">
 {% endblock %}
@@ -76,17 +76,15 @@
         <ol class="app__nav-list list--unstyled">
             {% for line in lines %}
                 <li>
-                    <a href="/{{ line.URLkey }}" class="statusbox linebox linebox--{{ line.URLkey }}">
+                    <a data-js="linebox--{{ line.URLkey }}" href="/{{ line.URLkey }}" class="statusbox linebox linebox--{{ line.URLkey }}">
                         <div class="statusbox__name">
                             {{ line.name }}
                             <br />
-                            {{ line.statusSummary }}
+                            <span data-js="linebox-summary">{{ line.statusSummary }}</span>
                         </div>
-                        {% if line.isDisrupted %}
-                            <div class="statusbox__alert">
-                                <svg><use xlink:href="#icon-alert" /></svg>
-                            </div>
-                        {% endif %}
+                        <div data-js="linebox-alert" class="statusbox__alert {% if not line.isDisrupted %}hidden{% endif %}">
+                            <svg><use xlink:href="#icon-alert" /></svg>
+                        </div>
                         <div class="statusbox__chevron">
                             <svg><use xlink:href="#icon-chevron-right" /></svg>
                         </div>

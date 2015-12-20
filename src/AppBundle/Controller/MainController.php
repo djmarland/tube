@@ -15,7 +15,6 @@ class MainController extends Controller
 
     public function indexAction()
     {
-        $this->getLines();
         return $this->renderTemplate('main:index');
     }
 

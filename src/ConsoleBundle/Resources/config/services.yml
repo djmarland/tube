@@ -5,7 +5,7 @@ services:
 
   console.services.tfl:
       class: IngestService\Service\TFLService
-      arguments: ["@console.guzzle_client", "%%tfl_app_id%", "%%tfl_app_key%"]
+      arguments: ["@console.guzzle_client", "%tfl_app_id%", "%tfl_app_key%"]
 
   console.services.update:
       class: IngestService\Service\UpdateService

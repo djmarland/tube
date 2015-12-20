@@ -2,9 +2,14 @@ home:
   path:     /
   defaults: { _controller: AppBundle:Main:index }
 
+all:
+  path:     /all.{format}
+  defaults: { _controller: AppBundle:Main:index }
+
 settings:
   path:     /settings
   defaults: { _controller: AppBundle:Main:settings }
+
 
 line:
   path:     /{line}

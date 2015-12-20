@@ -42,7 +42,7 @@ class Version20151212164332 extends AbstractMigration
             ['central-line', 'central', 'Central', 'Central Line'],
             ['circle-line', 'circle', 'Circle', 'Circle Line'],
             ['district-line', 'district', 'District', 'District Line'],
-            ['hammersmith-city-line', 'hammersmith-city', 'Hammersmith & City Line', 'Hammersmith & City'],
+            ['hammersmith-city-line', 'hammersmith-city', 'Hammersmith & City', 'Hammersmith & City Line'],
             ['jubilee-line', 'jubilee', 'Jubilee', 'Jubilee Line'],
             ['metropolitan-line', 'metropolitan', 'Metropolitan', 'Metropolitan Line'],
             ['northern-line', 'northern', 'Northern', 'Northern Line'],

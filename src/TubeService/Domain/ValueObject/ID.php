@@ -6,7 +6,7 @@ namespace TubeService\Domain\ValueObject;
  * Class ID
  * For handling Identifiers
  */
-class ID
+class ID implements \JsonSerializable
 {
 
     /**
@@ -34,5 +34,10 @@ class ID
     public function __toString()
     {
         return (string) $this->getId();
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->getId();
     }
 }

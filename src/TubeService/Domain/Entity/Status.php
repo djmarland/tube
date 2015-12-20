@@ -62,4 +62,20 @@ class Status extends Entity
     {
         return $this->descriptions;
     }
+
+    public function getUpdatedAtFormatted()
+    {
+        return $this->getUpdatedAt()->format('D j M Y H:i');
+    }
+
+    public function jsonSerialize()
+    {
+        $data = parent::jsonSerialize();
+        $data['isDisrupted'] = $this->isDisrupted();
+        $data['title'] = $this->getTitle();
+        $data['shortTitle'] = $this->getShortTitle();
+        $data['descriptions'] = $this->getDescriptions();
+        $data['updatedAtFormatted'] = $this->getUpdatedAtFormatted();
+        return $data;
+    }
 }

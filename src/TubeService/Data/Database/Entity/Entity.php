@@ -60,4 +60,12 @@ abstract class Entity
     {
         $this->updated_at = new \DateTime();
     }
+
+    /**
+     * Make the entity appear as though it has changed
+     */
+    public function touch()
+    {
+        $this->onUpdate();
+    }
 }

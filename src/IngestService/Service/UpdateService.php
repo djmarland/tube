@@ -3,11 +3,11 @@
 namespace IngestService\Service;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 
 use IngestService\Domain\TFLLine;
-use TubeService\Data\Database\Entity\Status;
 use TubeService\Domain\Entity\Line;
+use TubeService\Domain\Entity\Status;
+use TubeService\Data\Database\Entity\Status as StatusDb;
 
 class UpdateService
 {
@@ -30,7 +30,7 @@ class UpdateService
             ->find('TubeService:Line', $line->getId());
 
         // create a new status for this line
-        $status = new Status();
+        $status = new StatusDb();
         $status->setLine($lineEntity);
         $description = null;
         $descriptions = $TFLLine->getStatusDescriptions();
@@ -49,6 +49,20 @@ class UpdateService
         // use the new status ID to update the line
         $lineEntity->setLatestStatus($status);
         $this->entityManager->persist($lineEntity);
+        $this->entityManager->flush();
+    }
+
+    public function refreshStatus(
+        Status $status
+    ) {
+        // get the original status out of the database
+        $statusEntity = $this->entityManager
+            ->find('TubeService:Status', $status->getId());
+
+        // make it appear there was a change
+        $statusEntity->touch();
+
+        $this->entityManager->persist($statusEntity);
         $this->entityManager->flush();
     }
 }

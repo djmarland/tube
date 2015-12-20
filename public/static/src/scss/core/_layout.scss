@@ -26,6 +26,9 @@ body {
 .statusbox {
     min-height: 80px;
 }
+.homepage .page {
+    display: none;
+}
 
 @include mq($from: l) {
     body {
@@ -33,6 +36,10 @@ body {
     }
     .main {
         margin-top: $grid-unit-large;
+    }
+
+    .homepage .page {
+        display: block;
     }
     .app {
         @include flex-fill();

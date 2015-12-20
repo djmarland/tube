@@ -59,7 +59,9 @@ class StatusUpdateCommand extends ContainerAwareCommand
                 $previousStatusTitle == $currentStatusTitle &&
                 $previousStatusDescriptions == $currentStatusDescriptions
             ) {
-                $output->writeln('Status unchanged');
+                // refresh the "updated" time
+                $updateService->refreshStatus($latestStatus);
+                $output->writeln('Status unchanged. Saving updated time');
                 continue;
             }
 

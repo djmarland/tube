@@ -2,6 +2,7 @@
 
 namespace TubeService\Domain\Entity;
 
+use JsonSerializable;
 use TubeService\Domain\ValueObject\ID;
 use DateTime;
 
@@ -9,7 +10,7 @@ use DateTime;
  * Class Entity
  * For those which the base object inherit
  */
-abstract class Entity
+abstract class Entity implements JsonSerializable
 {
     /**
      * @param ID $id
@@ -54,5 +55,14 @@ abstract class Entity
     public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'createdAt' => $this->getCreatedAt()->format('c'),
+            'updatedAt' => $this->getUpdatedAt()->format('c')
+        ];
     }
 }

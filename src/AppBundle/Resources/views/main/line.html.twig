@@ -2,23 +2,47 @@
 
 
 {% block body %}
-    <h1 class="g-unit card card--padded linebox linebox--{{ line.URLkey }}">{{ line.name }}</h1>
-    <div class="g-unit card card--padded">
-        {% if line.latestStatus %}
-                <h2 class="g-unit">{{ line.latestStatus.title }}</h2>
-                {% if line.isDisrupted %}
-                    {% for description in line.latestStatus.descriptions %}
-                        <p class="g-unit">{{ description }}</p>
-                    {% endfor %}
+    <div data-js="line-page">
+        <h1 class="g-unit card card--padded linebox linebox--{{ line.URLkey }}" data-js="line-title">{{ line.name }}</h1>
+        <div class="grid">
+            <div class="g 1/2@xl 3/5@xxl">
+            <div class="card">
+                <div class="card__body card--padded" data-js="status-panel">
+                {% if line.latestStatus %}
+                        <h2 class="g-unit">{{ line.latestStatus.title }}</h2>
+                        {% if line.isDisrupted %}
+                            {% for description in line.latestStatus.descriptions %}
+                                <p class="g-unit">{{ description }}</p>
+                            {% endfor %}
+                        {% endif %}
+                {% else %}
+                    <h2>No Information</h2>
                 {% endif %}
-                <p>Last updated: {{ line.latestStatus.updatedAt.format('D j M Y H:i') }}</p>
-        {% else %}
-            <h2>No Information</h2>
-        {% endif %}
-    </div>
-    <div class="g-unit card card--padded">
-        <h2 class="g-unit">Notifications</h2>
-        <p>Your browser does not support notifications. <a href="/settings#notifications">More info</a></p>
+                </div>
+                <div class="card__foot">
+                    <p class="f card__foot-line">
+                        <strong>Last updated:</strong>
+                        <span>{{ line.latestStatus.updatedAtFormatted }}</span></p>
+                </div>
+            </div>
+            </div>
+            <div class="g 1/2@xl 2/5@xxl">
+                <div class="card">
+                    <div class="card__body">
+                        <div class="card__intro">
+                            <svg class="card__logo"><use xlink:href="#icon-alert" /></svg>
+                            <h2 class="c card__heading">Notifications</h2>
+                        </div>
+                        <div class="card--padded" data-js="notifications-panel">
+                            <p>Your browser does not support notifications. <a href="/settings#notifications">More info</a></p>
+                        </div>
+                    </div>
+                    <div class="card__foot text--right">
+                        <p class="f"><button class="btn" disabled data-js="button-save">Save</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!--<div class="g-unit card card--padded">
         <h2 class="g-unit">Service History</h2>

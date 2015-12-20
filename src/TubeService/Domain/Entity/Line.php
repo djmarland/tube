@@ -93,4 +93,17 @@ class Line extends Entity
         }
         return 'No Information';
     }
+
+    public function jsonSerialize()
+    {
+        $data = parent::jsonSerialize();
+        $data['name'] = $this->getName();
+        $data['shortName'] = $this->getShortName();
+        $data['urlKey'] = $this->getURLKey();
+        $data['displayOrder'] = $this->getDisplayOrder();
+        $data['isDisrupted'] = $this->isDisrupted();
+        $data['statusSummary'] = $this->getStatusSummary();
+        $data['latestStatus'] = $this->getLatestStatus();
+        return $data;
+    }
 }
