@@ -1,10 +1,12 @@
 {% extends 'AppBundle::base.html.twig' %}
 
 {% block bodyView %}line{% endblock %}
+{% block bodyLine %}{{ line.URLkey }}{% endblock %}
 
 {% block body %}
     <div data-js="line-page">
         <h1 class="g-unit card card--padded linebox" data-linebox="{{ line.URLkey }}" data-js="line-title">{{ line.name }}</h1>
+        <div class="page-limit">
         <div class="grid">
             <div class="g 1/2@xl 3/5@xxl">
             <div class="card">
@@ -30,12 +32,12 @@
             <div class="g 1/2@xl 2/5@xxl">
                 <div class="card">
                     <div class="card__body">
-                        <div class="card__intro">
+                        <div class="card__intro" data-js="notifyHead" data-linebox="{{ line.urlKey }}">
                             <svg class="card__logo"><use xlink:href="#icon-alert" /></svg>
                             <h2 class="c card__heading">Notifications</h2>
                         </div>
-                        <div class="card--padded" data-js="notifications-panel">
-                            <p>Your browser does not support notifications. <a href="/settings#notifications">More info</a></p>
+                        <div data-js="notifications-panel">
+                            <p class="card--padded" >Your browser does not support notifications. <a href="/settings#notifications">More info</a></p>
                         </div>
                     </div>
                     <div class="card__foot text--right">
@@ -43,6 +45,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
     <!--<div class="g-unit card card--padded">

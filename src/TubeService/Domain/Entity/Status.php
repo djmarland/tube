@@ -68,6 +68,11 @@ class Status extends Entity
         return $this->getUpdatedAt()->format('D j M Y H:i');
     }
 
+    public function getUpdatedAtISO()
+    {
+        return $this->getUpdatedAt()->format('c');
+    }
+
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize();

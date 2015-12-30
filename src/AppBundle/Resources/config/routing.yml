@@ -2,6 +2,10 @@ home:
   path:     /
   defaults: { _controller: AppBundle:Main:index }
 
+subscribe:
+  path:     /subscribe
+  defaults: { _controller: AppBundle:Notify:subscribe }
+
 all:
   path:     /all.{format}
   defaults: { _controller: AppBundle:Main:index }

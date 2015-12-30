@@ -70,12 +70,25 @@ class StatusUpdateCommand extends ContainerAwareCommand
             $updateService->addNewStatus($line, $tflLine);
 
             $output->writeln('Notifying subscribed users');
-            // @todo - send a notification
+            $this->notifyUsers($line);
         }
 
         $output->writeln('');
         $output->writeln('Done');
         return true;
+    }
+
+    private function notifyUsers($line)
+    {
+        // @todo - get all relevant users & split them by type
+        $this->notifyChromeUsers([]);
+//        $this->notifyForefoxUsers([]);
+    }
+
+    private function notifyChromeUsers($users)
+    {
+        $chromeService = $this->getContainer()->get('console.services.pushchrome');
+        $result = $chromeService->notifyUsers($users);
     }
 
     private function getTFLLine($lines, $id)

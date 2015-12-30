@@ -19,9 +19,6 @@ body {
 .app__main {
 }
 
-.main {
-    margin-top: $grid-unit-small;
-}
 
 .statusbox {
     min-height: 80px;
@@ -42,9 +39,6 @@ body[data-view="settings"] {
 @include mq($from: l) {
     body {
         padding-top: 0;
-    }
-    .main {
-        margin-top: $grid-unit-large;
     }
 
     body[data-view="homepage"] .page {

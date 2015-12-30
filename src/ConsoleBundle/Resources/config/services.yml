@@ -7,6 +7,10 @@ services:
       class: IngestService\Service\TFLService
       arguments: ["@console.guzzle_client", "%tfl_app_id%", "%tfl_app_key%"]
 
+  console.services.pushchrome:
+      class: IngestService\Service\PushChromeService
+      arguments: ["@console.guzzle_client", "%google_server_key%"]
+
   console.services.update:
       class: IngestService\Service\UpdateService
       arguments: ["@doctrine.orm.default_entity_manager"]

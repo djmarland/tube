@@ -16,7 +16,7 @@ framework:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: ~
     form:            ~
-    csrf_protection: ~
+    csrf_protection: false
     validation:      { enable_annotations: true }
     #serializer:      { enable_annotations: true }
     templating:
@@ -25,12 +25,13 @@ framework:
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies: ~
-    session:
-        # handler_id set to null will use default session handler from php.ini
-        handler_id:  ~
-        name: SESSION_IDENTITY
+#    session:
+#        # handler_id set to null will use default session handler from php.ini
+#        handler_id:  ~
+#        name: SESSION_IDENTITY
     fragments:       ~
     http_method_override: true
+    assets: ~
 
 # Twig Configuration
 twig:

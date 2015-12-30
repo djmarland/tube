@@ -13,21 +13,27 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-touch-icon-144x144.png" />
     <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152x152.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180x180.png" />
-    <link rel="icon" href="/static/icons/favicon.ico" type="image/x-icon" />
+    <!--<link rel="icon" href="/static/icons/favicon.ico" type="image/x-icon" />
     <link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16" />
     <link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/png" href="/static/icons/favicon-194x194.png" sizes="194x194" />
+    <link rel="icon" type="image/png" href="/static/icons/favicon-194x194.png" sizes="194x194" />-->
     <meta name="msapplication-TileColor" content="#383b3f" />
     <meta name="msapplication-TileImage" content="/static/icons/mstile-144x144.png" />
     <meta name="msapplication-square150x150logo" content="/static/icons/mstile-150x150.png" />
     <meta name="msapplication-square310x310logo" content="/static/icons/mstile-310x310.png" />
     <meta name="theme-color" content="#383b3f" />
+    <link rel="manifest" href="/manifest.json">
     <style>
         {{ source('@static/css/global.css') }}
     </style>
+    <script>
+        window.TubeAlert = {
+            linedata : {{ lineData|raw }}
+        }
+    </script>
 </head>
-<body data-view="{% block bodyView %}{% endblock %}">
+<body data-view="{% block bodyView %}{% endblock %}" data-pageline="{% block bodyLine %}{% endblock %}">
 <svg style="display: none">
     <symbol id="icon-chevron-left" viewBox="0 0 16 24"><path d="M14.88 2.878L5.756 12l9.124 9.142-2.81 2.808L.12 12 12.07.05l2.81 2.828z"/></symbol>
     <symbol id="icon-chevron-right" viewBox="0 0 16 24"><path d="M.12 21.122L9.244 12 .12 2.858 2.93.05 14.88 12 2.93 23.95.12 21.122z"/></symbol>
@@ -54,7 +60,7 @@
         </header>
         <div class="page" id="page">
             <main class="main">
-                <div id="main-body" class="page-limit" data-js="main-body">
+                <div id="main-body" data-js="main-body">
 {% endblock %}
 {% block body %}{% endblock %}
 {% block footer %}
@@ -75,7 +81,11 @@
         <ol class="app__nav-list list--unstyled">
             {% for line in lines %}
                 <li>
-                    <a data-js="linebox" data-linebox="{{ line.URLkey }}" href="/{{ line.URLkey }}" class="statusbox linebox linebox--{{ line.URLkey }}">
+                    <a data-js="linebox"
+                       data-linebox="{{ line.URLkey }}"
+                       data-updated="{{ line.latestStatus.updatedAtISO }}"
+                       href="/{{ line.URLkey }}"
+                       class="statusbox linebox linebox--{{ line.URLkey }}">
                         <div class="statusbox__name">
                             {{ line.name }}
                             <br />
@@ -94,6 +104,74 @@
     </nav>
 </div>
 {% endblock %}
+<template style="display:none" id="template-notify">
+    <div>
+        <p class="card--padded">Choose the times you wish to be notified for this line and hit save</p>
+        <table class="times">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>M<span class="invisible">onday</span></th>
+                    <th>T<span class="invisible">uesday</span></th>
+                    <th>W<span class="invisible">ednesday</span></th>
+                    <th>T<span class="invisible">hursday</span></th>
+                    <th>F<span class="invisible">riday</span></th>
+                    <th>S<span class="invisible">aturday</span></th>
+                    <th>S<span class="invisible">unday</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hour in range(5,23) %}
+                    <tr>
+                        <th class="times__hour">{{ hour }}</th>
+                        <td>
+                            <label>
+                                <span class="invisible">Monday {{ hour }}:00</span>
+                                <input class="times__box" type="checkbox" value="1-{{ hour }}" />
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <span class="invisible">Tuesday {{ hour }}:00</span>
+                                <input class="times__box" type="checkbox" value="2-{{ hour }}" />
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <span class="invisible">Wednesday {{ hour }}:00</span>
+                                <input class="times__box" type="checkbox" value="3-{{ hour }}" />
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <span class="invisible">Thursday {{ hour }}:00</span>
+                                <input class="times__box" type="checkbox" value="4-{{ hour }}" />
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <span class="invisible">Friday {{ hour }}:00</span>
+                                <input class="times__box" type="checkbox" value="5-{{ hour }}" />
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <span class="invisible">Saturday {{ hour }}:00</span>
+                                <input class="times__box" type="checkbox" value="6-{{ hour }}" />
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <span class="invisible">Sunday {{ hour }}:00</span>
+                                <input class="times__box" type="checkbox" value="7-{{ hour }}" />
+                            </label>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</template>
 <script>
     {{ source('@static/js/bootstrap.js') }}
 </script>

@@ -2,8 +2,7 @@
     "use strict";
     // @todo - split this stuff into ES6 classes/modules
     var TUBE = function() {
-        this.currentPage = null; // unknown until the JS sends you somewhere
-        this.statusData = null;
+        this.currentLine = null;
         this.lineTemplate = null;
         this.homeTemplate = null;
         this.settingsTemplate = null;
@@ -19,7 +18,12 @@
             settings : 'settings'
         },
         selectors : {
-            mainPage : '[data-js="main-body"]'
+            mainPage : '[data-js="main-body"]',
+            lineBox : '[data-js="linebox"]',
+            lineBoxAlert : '[data-js="linebox-alert"]',
+            lineBoxSummary : '[data-js="linebox-summary"]',
+            notificationsPanel : '[data-js="notifications-panel"]',
+            notificationsSave : '[data-js="notifications-save"]'
         },
         paths : {
             data : '/all.json',
@@ -30,6 +34,9 @@
         storage : {
             allLines : 'allLines'
         },
+        sessionData : {},
+        updateInterval : (1000 * 60 * 2), // 2 minutes
+        database : null,
         safeResponse : function(request) {
             return (request.status >= 200 && request.status < 400);
         },
@@ -44,10 +51,119 @@
             }.bind(this);
             request.send();
         },
+        getDatabaseTable : function() {
+            var transaction = this.database ? this.database.transaction(['data'], 'readwrite') : null;
+            return transaction ? transaction.objectStore('data') : null;
+        },
+        setData : function(key, value, callback) {
+            var tbl, request;
+            this.sessionData[key] = value;
+            tbl = this.getDatabaseTable();
+            if (tbl) {
+                request = tbl.put(value, key);
+                request.onsuccess = function () {
+                    if (callback) {
+                        callback();
+                    }
+                };
+            } else if (callback) {
+                callback();
+            }
+        },
+        getData : function(key, callback) {
+            var tbl;
+            if (this.sessionData[key]) {
+                return this.sessionData[key];
+            }
+            tbl = this.getDatabaseTable();
+            if (tbl) {
+                tbl.get(key).onsuccess = function (event) {
+                    var result = event.target.result;
+                    this.sessionData[key] = result;
+                    if (callback) {
+                        callback(result);
+                    }
+                }.bind(this);
+            }
+        },
+        initWithDB : function() {
+            var DB = indexedDB.open('TubeLines', 1);
+            DB.onsuccess = function(evt){
+                this.database = evt.target.result;
+                this.getData(this.storage.allLines, this.updateState.bind(this));
+                setInterval(this.refreshData.bind(this), this.updateInterval);
+                if ('serviceWorker' in navigator &&
+                    'content' in document.createElement('template')
+                ) {
+                    navigator.serviceWorker.register('/service-worker.js', {scope:'/'})
+                        .then(this.initialiseServiceWorker.bind(this));
+                }
+            }.bind(this);
+            DB.onupgradeneeded = function (evt) {
+                var dbobject = evt.target.result;
+                if (evt.oldVersion < 1) {
+                    // Create our object store and define indexes.
+                    dbobject.createObjectStore('data');
+                }
+            }.bind(this);
+        },
         init : function() {
-            this.refreshData();
             this.getTemplates();
             this.addListeners();
+            if (window.TubeAlert.linedata) {
+                this.setData(this.storage.allLines, JSON.stringify({lines:window.TubeAlert.linedata}));
+            }
+            if (window.indexedDB) {
+                return this.initWithDB();
+            }
+            setInterval(this.refreshData.bind(this), this.updateInterval);
+        },
+
+        updateState : function() {
+            // using incoming data
+            // if is newer than what is already on the page, replace it
+            var lineboxes = document.querySelectorAll(this.selectors.lineBox),
+                linebox,
+                linedata,
+                l = lineboxes.length,
+                d1, d2, i;
+            for (i=0;i<l;i++) {
+                linebox = lineboxes[i];
+                linedata = this.getLineData(linebox.dataset.linebox);
+                if (!linedata) {
+                    continue;
+                }
+                d1 = new Date(linebox.dataset.updated);
+                d2 = new Date(linedata.latestStatus.updatedAt);
+                if (d2 > d1) {
+                    linebox.dataset.updated = linedata.latestStatus.updatedAt;
+                    linebox.querySelector(this.selectors.lineBoxSummary).textContent = linedata.statusSummary;
+                    if (linedata.isDisrupted) {
+                        linebox.querySelector(this.selectors.lineBoxAlert).classList.remove('hidden');
+                    } else {
+                        linebox.querySelector(this.selectors.lineBoxAlert).classList.add('hidden');
+                    }
+
+                    // if currently looking at this line page, it needs updating
+                    if (this.currentLine == linedata.urlKey) {
+                        this.swapBody(this.transformLineTemplate(this.lineTemplate, linedata));
+                    }
+                }
+            }
+        },
+        initialiseServiceWorker : function() {
+            // send a line template to the cache
+            var urlToCache = '/bakerloo-line';
+            if (this.currentLine) {
+                urlToCache = '/' + this.currentLine;
+                this.setNotificationsPanel(this.currentLine);
+            }
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'cacheUrl',
+                    value: urlToCache
+                });
+            }
         },
         stringToDom : function(string) {
             var doc = document.createElement('div');
@@ -56,7 +172,10 @@
         },
         getTemplates : function() {
             var body = document.body,
-                currentPage = document.getElementById(this.mainPageID);
+                currentPage = document.getElementById(this.mainPageID).cloneNode(true);
+
+            this.currentLine = null;
+
             // home
             if (body.dataset.view == this.bodyView.home) {
                 // home was here. use it
@@ -72,6 +191,7 @@
             if (body.dataset.view == this.bodyView.line) {
                 // home was here. use it
                 this.lineTemplate = currentPage;
+                this.currentLine = body.dataset.pageline;
             } else {
                 // go and fetch it
                 this.ajax(this.paths.line, function(response) {
@@ -92,42 +212,128 @@
         },
         refreshData : function() {
             this.ajax(this.paths.data, function(response) {
-                window.localStorage.setItem(this.storage.allLines, response);
+                this.setData(this.storage.allLines, response, this.updateState.bind(this));
             }.bind(this));
         },
         swapBody : function(data) {
             this.mainArea.innerHTML = data.innerHTML;
         },
-        goHome : function() {
-            var path = '/';
+        goHome : function(popped) {
+            var path = '/',
+                body = document.body;
             if (!this.homeTemplate) {
                 window.location.href = path;
                 return;
             }
             this.swapBody(this.homeTemplate);
             document.body.dataset.view = this.bodyView.home;
-            window.history.pushState({}, '', path); // @todo - sort titles
+            body.dataset.pageline = null;
+            this.currentLine = null;
+            if (!popped) {
+                window.history.pushState({}, '', path); // @todo - sort titles
+            }
         },
-        goToSettings : function() {
-            var path = '/settings';
+        goToSettings : function(popped) {
+            var path = '/settings',
+                body = document.body;
             if (!this.settingsTemplate) {
                 window.location.href = path;
                 return;
             }
             this.swapBody(this.settingsTemplate);
-            document.body.dataset.view = this.bodyView.settings;
-            window.history.pushState({}, '', path); // @todo - sort titles
+            body.dataset.view = this.bodyView.settings;
+            body.dataset.pageline = null;
+            this.currentLine = null;
+            if (!popped) {
+                window.history.pushState({}, '', path); // @todo - sort titles
+            }
         },
-        goToLine : function(lineKey) {
+        goToLine : function(lineKey, popped) {
             var path = '/' + lineKey,
-                lineData = this.getLineData(lineKey);
+                lineData = this.getLineData(lineKey),
+                body = document.body;
             if (!this.lineTemplate || !lineData) {
                 window.location.href = path;
                 return;
             }
             this.swapBody(this.transformLineTemplate(this.lineTemplate, lineData));
-            document.body.dataset.view = this.bodyView.line;
-            window.history.pushState({}, '', path); // @todo - sort titles
+            this.setNotificationsPanel(lineKey);
+            body.dataset.view = this.bodyView.line;
+            body.dataset.pageline = lineKey;
+            this.currentLine = lineKey;
+            if (!popped) {
+                window.history.pushState({}, '', path); // @todo - sort titles
+                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({
+                        type: 'cacheUrl',
+                        value: path
+                    });
+                }
+            }
+        },
+        setNotificationsPanel : function(lineKey) {
+            var target = document.querySelector(this.selectors.notificationsPanel),
+                button = document.querySelector(this.selectors.notificationsSave),
+                notificationsTemplate = document.getElementById('template-notify'),
+                panel = document.importNode(notificationsTemplate.content, true);
+
+            if (!('showNotification' in ServiceWorkerRegistration.prototype) ||
+                !('PushManager' in window)) {
+                return; //push notifcations not supported
+            }
+
+            if (Notification.permission === 'denied') {
+                target.innerHTML = 'You have denied access for notifications';
+                return;
+            }
+
+            button.disabled = false;
+
+            button.addEventListener('click', function() {
+                button.disabled = true;
+                this.updateSubscription(lineKey, panel);
+            }.bind(this));
+
+            target.innerHTML = '';
+            target.appendChild(panel);
+        },
+        updateSubscription : function(lineKey, panel) {
+            var checkboxes = panel.querySelectorAll('[type="checkbox"]'),
+                button = document.querySelector(this.selectors.notificationsSave),
+                l = checkboxes.length;
+
+            // @todo - run through all the checkboxes, updating setting for this line
+            // @todo - save back into indexedDB
+
+
+            navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+                serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly:true})
+                    .then(function(subscription) {
+                        // The subscription was successful
+                        button.disabled = false;
+
+                        // @todo - real lines data
+                        this.ajax('/subscribe?endpoint=' + subscription.endpoint + '&lines={"met":"yep"})', function(data) {
+                            // @todo - error callback, and double check the status
+                            console.warn('Saved status ' + data);
+                        });
+                        //return sendSubscriptionToServer(subscription);
+                    }.bind(this))
+                    .catch(function(e) {
+                        if (Notification.permission === 'denied') {
+                            // @todo - indicate this
+                            console.warn('Permission for Notifications was denied');
+                            button.disabled = false;
+                        } else {
+                            // A problem occurred with the subscription; common reasons
+                            // include network errors, and lacking gcm_sender_id and/or
+                            // gcm_user_visible_only in the manifest.
+                            // @todo - indicate this
+                            console.error('Unable to subscribe to push.', e);
+                            button.disabled = false;
+                        }
+                    }.bind(this));
+            }.bind(this));
         },
         transformLineTemplate : function(template, data) {
             var page = this.stringToDom(template.innerHTML),
@@ -137,6 +343,7 @@
                 panelContent = '<h2>No information</h2>',
                 updatedContent = 'N/A';
 
+            page.querySelector('[data-js="notifyHead"]').dataset.linebox = data.urlKey;
             title.dataset.linebox = data.urlKey;
             title.innerHTML = data.name;
             if (data.latestStatus) {
@@ -157,7 +364,7 @@
             return page;
         },
         getLineData : function(key) {
-            var saved = window.localStorage.getItem('allLines'),
+            var saved = this.getData(this.storage.allLines),
                 data = null,
                 allLines;
             if (!saved) {
@@ -174,16 +381,16 @@
             });
             return data;
         },
-        navigate : function(path) {
+        navigate : function(path, popped) {
             // a very simple router
             if (path == '/') {
-                return this.goHome();
+                return this.goHome(popped);
             }
             if (path == '/settings') {
-                return this.goToSettings();
+                return this.goToSettings(popped);
             }
             path = path.replace('/','');
-            return this.goToLine(path);
+            return this.goToLine(path, popped);
         },
         addListeners : function() {
             // delegated listener for all <a> elements
@@ -202,72 +409,14 @@
             }.bind(this));
 
             window.onpopstate = function () {
-                this.navigate(document.location.pathname);
+                this.navigate(document.location.pathname, true);
             }.bind(this);
         }
     };
 
-
-    //
-    //function loadData()
-    //{
-    //    var saved = window.localStorage.getItem('allLines');
-    //    if (saved) {
-    //        return JSON.parse(saved);
-    //    }
-    //    return null;
-    //}
-    //
-    //function getLineData(key)
-    //{
-
-    //}
-    //
-
-    //
-    //function lineNavigate(key, back)
-    //{
-    //    var lineData = getLineData(key);
-    //    if (lineData) {
-    //        if (!back) {
-    //            window.history.pushState({}, lineData.name, '/' + key);
-    //        }
-    //        loadLine(lineData);
-    //    }
-    //}
-    //
-    //function loadLine(data)
-    //{
-    //    var page = document.getElementById('js-line-page'),
-    //        title = document.getElementById('js-line-title'),
-    //        statusPanel = document.getElementById('js-line-status-panel'),
-    //        updatedPanel = document.getElementById('js-line-updated'),
-    //        panelContent = '<h2>No information</h2>',
-    //        updatedContent = 'N/A';
-    //
-    //    title.dataset.linebox = data.urlKey;
-    //    title.innerHTML = data.name;
-    //
-    //    if (data.latestStatus) {
-    //        panelContent = '<h2 class="g-unit">' + data.latestStatus.title + '</h2>';
-    //        if (
-    //            data.latestStatus.isDisrupted &&
-    //            data.latestStatus.descriptions
-    //        ) {
-    //            data.latestStatus.descriptions.forEach(function(description){
-    //               panelContent += '<p class="g-unit">' + description + '</p>';
-    //            });
-    //        }
-    //        updatedContent = data.latestStatus.updatedAtFormatted;
-    //    }
-    //    statusPanel.innerHTML = panelContent;
-    //    updatedPanel.innerHTML = updatedContent;
-    //}
-
-
     // Cut the mustard
-    if (document.addEventListener &&
-        window.localStorage &&
+    if (document.querySelector &&
+        document.addEventListener &&
         window.history
     ) {
         new TUBE();
