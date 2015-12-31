@@ -34,7 +34,7 @@ abstract class Service
     {
         $data = $this->getDomainModelsFromDatabaseResult($result);
 
-        if ($data) {
+        if (!empty($data)) {
             return new ServiceResult($data);
         }
         return new ServiceResultEmpty();
@@ -42,16 +42,13 @@ abstract class Service
 
     private function getDomainModelsFromDatabaseResult($items)
     {
-        if (!$items) {
-            return null;
-        }
         if (!is_array($items)) {
             $items = [$items];
         }
 
         $mapperFactory = new MapperFactory();
 
-        $domainModels = array();
+        $domainModels = [];
         foreach ($items as $item) {
             $mapper = $mapperFactory->getMapper($item);
             $domainModels[] = $mapper->getDomainModel($item);

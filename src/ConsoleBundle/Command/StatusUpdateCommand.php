@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use TubeService\Domain\Entity\Line;
 
 class StatusUpdateCommand extends ContainerAwareCommand
 {
@@ -62,15 +63,16 @@ class StatusUpdateCommand extends ContainerAwareCommand
                 // refresh the "updated" time
                 $updateService->refreshStatus($latestStatus);
                 $output->writeln('Status unchanged. Saving updated time');
+                $this->notifyUsers($line, $latestStatus);
                 continue;
             }
 
             $output->writeln('Status has changed. Saving new status');
             // update the statuses
-            $updateService->addNewStatus($line, $tflLine);
+            $status = $updateService->addNewStatus($line, $tflLine);
 
             $output->writeln('Notifying subscribed users');
-            $this->notifyUsers($line);
+            $this->notifyUsers($line, $status);
         }
 
         $output->writeln('');
@@ -78,17 +80,42 @@ class StatusUpdateCommand extends ContainerAwareCommand
         return true;
     }
 
-    private function notifyUsers($line)
+    private function notifyUsers(Line $line, $status)
     {
-        // @todo - get all relevant users & split them by type
-        $this->notifyChromeUsers([]);
-//        $this->notifyForefoxUsers([]);
-    }
+        $subscriptionService = $this->getContainer()->get('console.services.subscription');
 
-    private function notifyChromeUsers($users)
-    {
-        $chromeService = $this->getContainer()->get('console.services.pushchrome');
-        $result = $chromeService->notifyUsers($users);
+        $now = new DateTime();
+        $day = (int) $now->format('N');
+        $hour = (int) $now->format('H');
+
+        $result = $subscriptionService->findAllForLineAndTime(
+            $line,
+            $day,
+            $hour
+        );
+        // split the results by type
+        $subscriptions = $result->getDomainModels();
+
+        $notificationService = $this->getContainer()->get('console.services.notification');
+
+        foreach($subscriptions as $subscription) {
+            // create a notification for everyone
+            $notificationService->createNew(
+                $subscription->getEndpoint(),
+                $line->getName(),
+                $line->getStatusSummary(),
+                '/' . $line->getURLKey(),
+                '/static/icons/icon-' . $line->getURLKey() . '.png'
+            );
+        }
+
+        $pushService = $this->getContainer()->get('console.services.push');
+        $pushService->notifyChromeUsers(array_filter($subscriptions, function($sub) {
+            return $sub->isChrome();
+        }));
+        $pushService->notifyFirefoxUsers(array_filter($subscriptions, function($sub) {
+            return $sub->isFirefox();
+        }));
     }
 
     private function getTFLLine($lines, $id)

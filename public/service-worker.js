@@ -1,12 +1,27 @@
-var VERSION = 1,
+var VERSION = 4,
     CACHE_NAME = 'page-cache-' + VERSION,
     urlsToCache = [
         '/',
-        '/settings'
+        '/settings',
+        '/bakerloo-line',
+        '/central-line',
+        '/circle-line',
+        '/district-line',
+        '/hammersmith-city-line',
+        '/jubilee-line',
+        '/metropolitan-line',
+        '/northern-line',
+        '/piccadilly-line',
+        '/victoria-line',
+        '/waterloo-city-line',
+        '/dlr',
+        '/london-overground',
+        '/tfl-rail'
     ];
 
 self.addEventListener('install', function(event) {
     // Perform install steps
+    console.log(VERSION);
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(function(cache) {
@@ -15,37 +30,65 @@ self.addEventListener('install', function(event) {
     );
 });
 
-self.addEventListener('message', function(event) {
-    var data = event.data;
-    switch (data.type) {
-        case 'cacheUrl':
-            addToCache(data.value);
-    }
-});
-
 self.addEventListener('push', function(event) {
-    console.log('Received a push message', event);
-
-    var title = 'Yay a message.';
-    var body = 'We have received a push message.';
-    var icon = '/images/icon-192x192.png';
-    var tag = 'simple-push-demo-notification-tag';
-
-    event.waitUntil(
-        self.registration.showNotification(title, {
-            body: body,
-            icon: icon,
-            tag: tag
+    return event.waitUntil(
+        self.registration.pushManager.getSubscription().then(function(subscription) {
+            if (!subscription) {
+                return null;
+            }
+            return subscription.endpoint;
+        }).then(function(endpoint) {
+            return fetch('/notifications/latest?endpoint=' + endpoint)
+                .then(function(response) {
+                    return response.json();
+                });
+        }).then(function(notification) {
+            return self.registration.showNotification(notification.title, {
+                body: notification.description,
+                icon: notification.image,
+                tag: notification.url
+            });
         })
     );
 });
 
-function addToCache(url) {
-    caches.open(CACHE_NAME)
-        .then(function(cache) {
-            cache.add(url);
-        });
-}
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+
+    // This looks to see if the current is already open and
+    // focuses if it is
+    event.waitUntil(
+        clients.matchAll({
+                type: "window"
+            })
+            .then(function(clientList) {
+                for (var i = 0; i < clientList.length; i++) {
+                    var client = clientList[i],
+                        url = client.url,
+                        parts = url.split('/'),
+                        path = '/' + parts[parts.length-1];
+                    if (path == event.notification.tag && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                if (clients.openWindow) {
+                    return clients.openWindow(event.notification.tag);
+                }
+            })
+    );
+});
+
+self.addEventListener('fetch', function(event) {
+    event.respondWith(
+        caches.open(CACHE_NAME).then(function(cache) {
+            return cache.match(event.request).then(function (response) {
+                return response || fetch(event.request).then(function(response) {
+                        return response;
+                    });
+            });
+        })
+    );
+});
 
 //self.addEventListener('install', function(event) {
 //    // Perform install steps

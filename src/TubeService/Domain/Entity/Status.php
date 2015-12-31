@@ -5,10 +5,6 @@ namespace TubeService\Domain\Entity;
 use TubeService\Domain\ValueObject\ID;
 use DateTime;
 
-/**
- * Class Entity
- * For those which the base object inherit
- */
 class Status extends Entity
 {
     public function __construct(

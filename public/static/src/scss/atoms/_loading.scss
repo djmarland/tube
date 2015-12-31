@@ -41,13 +41,25 @@ $loading-duration: 1.4s;
     animation: loading-rotate $loading-duration linear infinite;
 }
 .loading__path {
-    stroke: $color-darker;
+    stroke: $color-text;
     stroke-dasharray: $loading-offset;
     stroke-dashoffset: 0;
     transform-origin: center;
     -webkit-animation: loading-dash $loading-duration ease-in-out infinite;
     animation: loading-dash $loading-duration ease-in-out infinite;
 }
+
+.loading--leading {
+    margin-top: 24px;
+    width: 24px;
+}
+
+.loading-container {
+    width: 24px;
+    margin-right: 12px;
+    position: relative;
+}
+
 //
 //.loading {
 //    position: relative;

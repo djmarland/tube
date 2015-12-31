@@ -79,6 +79,11 @@ class Line extends Entity
         $this->display_order = $display_order;
     }
 
+    public function hasLatestStatus()
+    {
+        return !property_exists($this->latest_status, '__isInitialized__');
+    }
+
     public function getLatestStatus()
     {
         return $this->latest_status;

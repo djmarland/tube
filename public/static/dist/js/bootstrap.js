@@ -23,7 +23,8 @@
             lineBoxAlert : '[data-js="linebox-alert"]',
             lineBoxSummary : '[data-js="linebox-summary"]',
             notificationsPanel : '[data-js="notifications-panel"]',
-            notificationsSave : '[data-js="notifications-save"]'
+            notificationsSave : '[data-js="notifications-save"]',
+            notificationsStatus : '[data-js="notifications-progress"]'
         },
         paths : {
             data : '/all.json',
@@ -147,22 +148,14 @@
                     // if currently looking at this line page, it needs updating
                     if (this.currentLine == linedata.urlKey) {
                         this.swapBody(this.transformLineTemplate(this.lineTemplate, linedata));
+                        this.setNotificationsPanel(linedata.urlKey);
                     }
                 }
             }
         },
         initialiseServiceWorker : function() {
-            // send a line template to the cache
-            var urlToCache = '/bakerloo-line';
             if (this.currentLine) {
-                urlToCache = '/' + this.currentLine;
                 this.setNotificationsPanel(this.currentLine);
-            }
-            if (navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({
-                    type: 'cacheUrl',
-                    value: urlToCache
-                });
             }
         },
         stringToDom : function(string) {
@@ -263,12 +256,6 @@
             this.currentLine = lineKey;
             if (!popped) {
                 window.history.pushState({}, '', path); // @todo - sort titles
-                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                    navigator.serviceWorker.controller.postMessage({
-                        type: 'cacheUrl',
-                        value: path
-                    });
-                }
             }
         },
         setNotificationsPanel : function(lineKey) {
@@ -300,20 +287,27 @@
         updateSubscription : function(lineKey, panel) {
             var checkboxes = panel.querySelectorAll('[type="checkbox"]'),
                 button = document.querySelector(this.selectors.notificationsSave),
-                l = checkboxes.length;
+                status = document.querySelector(this.selectors.notificationsStatus),
+                l = checkboxes.length,
+                times = JSON.stringify(this.getTimes());
 
-            // @todo - run through all the checkboxes, updating setting for this line
+            status.innerHTML = '<span class="loading-container"><span class="loading loading--leading"><span class="loading__path"></span></span></span>Saving...';
+
             // @todo - save back into indexedDB
 
 
             navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
                 serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly:true})
                     .then(function(subscription) {
+                        var url = '/notifications/subscribe?endpoint=' + subscription.endpoint + '&line=' + this.currentLine;
+
                         // The subscription was successful
                         button.disabled = false;
 
-                        // @todo - real lines data
-                        this.ajax('/subscribe?endpoint=' + subscription.endpoint + '&lines={"met":"yep"})', function(data) {
+                        // @todo - cal lines data
+                        url += '&times=' + times;
+
+                        this.ajax(url, function(data) {
                             // @todo - error callback, and double check the status
                             console.warn('Saved status ' + data);
                         });
@@ -334,6 +328,21 @@
                         }
                     }.bind(this));
             }.bind(this));
+        },
+        getTimes : function() {
+            var panel = document.querySelector(this.selectors.notificationsPanel),
+                checkboxes = panel.querySelectorAll('[type="checkbox"]'),
+                l = checkboxes.length,
+                i, c,
+                times = [];
+
+            for (i=0;i<l;i++) {
+                c = checkboxes[i];
+                if (c.checked) {
+                    times.push(c.value);
+                }
+            }
+            return times;
         },
         transformLineTemplate : function(template, data) {
             var page = this.stringToDom(template.innerHTML),

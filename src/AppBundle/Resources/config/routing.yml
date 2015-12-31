@@ -2,9 +2,18 @@ home:
   path:     /
   defaults: { _controller: AppBundle:Main:index }
 
-subscribe:
-  path:     /subscribe
+notifications_subscribe:
+  path:     /notifications/subscribe
   defaults: { _controller: AppBundle:Notify:subscribe }
+
+notifications_latest:
+  path:     /notifications/latest
+  defaults: { _controller: AppBundle:Notify:latest }
+
+notifications_status:
+  path:     /notifications
+  defaults: { _controller: AppBundle:Notify:status }
+
 
 all:
   path:     /all.{format}

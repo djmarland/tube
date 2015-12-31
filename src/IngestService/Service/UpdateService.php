@@ -50,6 +50,8 @@ class UpdateService
         $lineEntity->setLatestStatus($status);
         $this->entityManager->persist($lineEntity);
         $this->entityManager->flush();
+
+        return $status;
     }
 
     public function refreshStatus(

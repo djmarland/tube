@@ -11,3 +11,11 @@ services:
   app.services.line:
       class: TubeService\Service\LineService
       arguments: ["@doctrine.orm.default_entity_manager"]
+
+  app.services.subscriptions:
+      class: TubeService\Service\SubscriptionService
+      arguments: ["@doctrine.orm.default_entity_manager"]
+
+  app.services.notifcation:
+      class: TubeService\Service\NotificationService
+      arguments: ["@doctrine.orm.default_entity_manager"]

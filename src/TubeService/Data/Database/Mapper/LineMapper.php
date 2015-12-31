@@ -13,9 +13,8 @@ class LineMapper extends Mapper
 
         $latestStatus = null;
 
-        $status = $item->getLatestStatus();
-        if ($status) {
-            $latestStatus = $this->mapperFactory->getDomainModel($status);
+        if ($item->hasLatestStatus()) { // don't lazy load if it wasn't included
+            $latestStatus = $this->mapperFactory->getDomainModel($item->getLatestStatus());
         }
 
 

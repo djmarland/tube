@@ -7,8 +7,8 @@ services:
       class: IngestService\Service\TFLService
       arguments: ["@console.guzzle_client", "%tfl_app_id%", "%tfl_app_key%"]
 
-  console.services.pushchrome:
-      class: IngestService\Service\PushChromeService
+  console.services.push:
+      class: IngestService\Service\PushService
       arguments: ["@console.guzzle_client", "%google_server_key%"]
 
   console.services.update:
@@ -17,4 +17,12 @@ services:
 
   console.services.line:
       class: TubeService\Service\LineService
+      arguments: ["@doctrine.orm.default_entity_manager"]
+
+  console.services.subscription:
+      class: TubeService\Service\SubscriptionService
+      arguments: ["@doctrine.orm.default_entity_manager"]
+
+  console.services.notification:
+      class: TubeService\Service\NotificationService
       arguments: ["@doctrine.orm.default_entity_manager"]

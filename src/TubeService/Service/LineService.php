@@ -2,6 +2,8 @@
 
 namespace TubeService\Service;
 
+use TubeService\Domain\Entity\Line;
+
 class LineService extends Service
 {
     const LINE_ENTITY = 'Line';
@@ -14,7 +16,16 @@ class LineService extends Service
         return $this->getServiceResultFromDatabaseResult($result);
     }
 
-    public function findAllWithStatus()
+    public function findByKey($key) {
+        $qb = $this->getQueryBuilder(self::LINE_ENTITY);
+        $qb->select(self::TBL)
+            ->where(self::TBL . '.url_key = :key')
+            ->setParameters(['key' => $key]);
+        $result = $qb->getQuery()->getSingleResult();
+        return $this->getServiceResultFromDatabaseResult($result)->getDomainModel();
+    }
+
+    public function findAllWithStatus(): ServiceResultInterface
     {
         $tblStatus = 's';
 
