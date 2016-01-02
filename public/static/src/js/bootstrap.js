@@ -41,15 +41,25 @@
         safeResponse : function(request) {
             return (request.status >= 200 && request.status < 400);
         },
-        ajax : function(url, callback) {
+        ajax : function(url, callback, errorCallback) {
             var request = new XMLHttpRequest();
             request.open('GET', url, true);
 
             request.onload = function() {
                 if (this.safeResponse(request)) {
-                    callback(request.response);
+                    return callback(request.response);
+                }
+                if (errorCallback) {
+                    return errorCallback(request.response);
                 }
             }.bind(this);
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                if (errorCallback) {
+                    return errorCallback(request.response);
+                }
+            };
             request.send();
         },
         getDatabaseTable : function() {
@@ -74,6 +84,9 @@
         getData : function(key, callback) {
             var tbl;
             if (this.sessionData[key]) {
+                if (callback) {
+                    return callback(this.sessionData[key]);
+                }
                 return this.sessionData[key];
             }
             tbl = this.getDatabaseTable();
@@ -91,7 +104,21 @@
             var DB = indexedDB.open('TubeLines', 1);
             DB.onsuccess = function(evt){
                 this.database = evt.target.result;
-                this.getData(this.storage.allLines, this.updateState.bind(this));
+                this.getData(this.storage.allLines, function(data) {
+                    var d1,d2;
+                    if (data && window.TubeAlert.linedata) {
+                        data = JSON.parse(data);
+                        d1 = new Date(data.lines[0].latestStatus.updatedAt);
+                        d2 = new Date(window.TubeAlert.linedata[0].latestStatus.updatedAt);
+                        if (d2 > d1) {
+                            this.setData(this.storage.allLines, JSON.stringify({lines: window.TubeAlert.linedata}));
+                        }
+                    } else if (window.TubeAlert.linedata) {
+                        this.setData(this.storage.allLines, JSON.stringify({lines:window.TubeAlert.linedata}));
+                    }
+                    this.updateState();
+                }.bind(this));
+                this.refreshData();
                 setInterval(this.refreshData.bind(this), this.updateInterval);
                 if ('serviceWorker' in navigator &&
                     'content' in document.createElement('template')
@@ -111,12 +138,13 @@
         init : function() {
             this.getTemplates();
             this.addListeners();
-            if (window.TubeAlert.linedata) {
-                this.setData(this.storage.allLines, JSON.stringify({lines:window.TubeAlert.linedata}));
-            }
             if (window.indexedDB) {
                 return this.initWithDB();
             }
+            if (window.TubeAlert.linedata) {
+                this.setData(this.storage.allLines, JSON.stringify({lines:window.TubeAlert.linedata}));
+            }
+            this.refreshData();
             setInterval(this.refreshData.bind(this), this.updateInterval);
         },
 
@@ -266,7 +294,7 @@
 
             if (!('showNotification' in ServiceWorkerRegistration.prototype) ||
                 !('PushManager' in window)) {
-                return; //push notifcations not supported
+                return; //push notifications not supported
             }
 
             if (Notification.permission === 'denied') {
@@ -281,21 +309,51 @@
                 this.updateSubscription(lineKey, panel);
             }.bind(this));
 
-            target.innerHTML = '';
-            target.appendChild(panel);
+            this.getData('times', function(data) {
+                if (data) {
+                    data = JSON.parse(data);
+                    if (data[lineKey]) {
+                        panel = this.setTimes(JSON.parse(data[lineKey]), panel);
+                    }
+                }
+                target.innerHTML = '';
+                target.appendChild(panel);
+            }.bind(this));
+
+
+        },
+        setTimes : function(times, panel) {
+            var l = times.length,
+                i, c;
+            for (i=0;i<l;i++) {
+                c = panel.querySelector('input[value="' + times[i] + '"]');
+                if (c) {
+                    c.checked = true;
+                }
+            }
+            return panel;
+        },
+        updateStatus : function(statusMsg) {
+            var status = document.querySelector(this.selectors.notificationsStatus);
+            status.innerHTML = statusMsg;
         },
         updateSubscription : function(lineKey, panel) {
             var checkboxes = panel.querySelectorAll('[type="checkbox"]'),
                 button = document.querySelector(this.selectors.notificationsSave),
-                status = document.querySelector(this.selectors.notificationsStatus),
                 l = checkboxes.length,
                 times = JSON.stringify(this.getTimes());
 
-            //status.innerHTML = '<span class="loading-container"><span class="loading loading--leading"><span class="loading__path"></span></span></span>Saving...';
-            status.innerHTML = 'Saving...';
+            this.updateStatus('<span class="loading loading--leading"></span>Saving...');
 
-            // @todo - save back into indexedDB
-
+            this.getData('times', function(data) {
+                if (data) {
+                    data = JSON.parse(data);
+                } else {
+                    data = {}
+                }
+                data[lineKey] = times;
+                this.setData('times', JSON.stringify(data));
+            }.bind(this));
 
             navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
                 serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly:true})
@@ -305,26 +363,25 @@
                         // The subscription was successful
                         button.disabled = false;
 
-                        // @todo - cal lines data
                         url += '&times=' + times;
 
                         this.ajax(url, function(data) {
-                            // @todo - error callback, and double check the status
-                            console.warn('Saved status ' + data);
-                        });
-                        //return sendSubscriptionToServer(subscription);
+                            var status = JSON.parse(data);
+                            if (status.status && status.status === 'ok') {
+                                this.updateStatus('Saved');
+                                return;
+                            }
+                            this.updateStatus('An error occurred');
+                        }.bind(this), function() {
+                            this.updateStatus('An error occurred');
+                        }.bind(this));
                     }.bind(this))
                     .catch(function(e) {
                         if (Notification.permission === 'denied') {
-                            // @todo - indicate this
-                            console.warn('Permission for Notifications was denied');
+                            this.updateStatus('Permission denied');
                             button.disabled = false;
                         } else {
-                            // A problem occurred with the subscription; common reasons
-                            // include network errors, and lacking gcm_sender_id and/or
-                            // gcm_user_visible_only in the manifest.
-                            // @todo - indicate this
-                            console.error('Unable to subscribe to push.', e);
+                            this.updateStatus('Unable to subscribe');
                             button.disabled = false;
                         }
                     }.bind(this));
