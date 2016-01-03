@@ -2,6 +2,8 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
+date_default_timezone_set('Europe/London');
+
 require __DIR__.'/../app/autoload.php';
 
 $env = 'prod';

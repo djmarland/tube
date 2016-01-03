@@ -2,6 +2,10 @@ home:
   path:     /
   defaults: { _controller: AppBundle:Main:index }
 
+update:
+  path:     /update
+  defaults: { _controller: AppBundle:Update:minute }
+
 notifications_subscribe:
   path:     /notifications/subscribe
   defaults: { _controller: AppBundle:Notify:subscribe }
