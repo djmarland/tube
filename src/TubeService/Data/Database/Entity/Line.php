@@ -81,7 +81,7 @@ class Line extends Entity
 
     public function hasLatestStatus()
     {
-        return !property_exists($this->latest_status, '__isInitialized__');
+        return is_object($this->latest_status) && !property_exists($this->latest_status, '__isInitialized__');
     }
 
     public function getLatestStatus()

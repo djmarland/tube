@@ -15,7 +15,7 @@ class UpdateController extends Controller
     {
         $command = new StatusUpdateCommand();
         $command->setContainer($this->container);
-        $input = new ArrayInput([]));
+        $input = new ArrayInput([]);
         $output = new NullOutput();
 
         $resultCode = $command->run($input, $output);
