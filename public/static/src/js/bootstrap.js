@@ -237,6 +237,7 @@
             }.bind(this));
         },
         swapBody : function(data) {
+            window.scrollTo(0, 0);
             this.mainArea.innerHTML = data.innerHTML;
         },
         goHome : function(popped) {
@@ -292,7 +293,8 @@
                 notificationsTemplate = document.getElementById('template-notify'),
                 panel = document.importNode(notificationsTemplate.content, true);
 
-            if (!('showNotification' in ServiceWorkerRegistration.prototype) ||
+            if (!('ServiceWorkerRegistration' in window) ||
+                !('showNotification' in ServiceWorkerRegistration.prototype) ||
                 !('PushManager' in window)) {
                 return; //push notifications not supported
             }
