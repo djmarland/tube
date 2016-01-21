@@ -63,7 +63,6 @@ class StatusUpdateCommand extends ContainerAwareCommand
                 // refresh the "updated" time
                 $updateService->refreshStatus($latestStatus);
                 $output->writeln('Status unchanged. Saving updated time');
-                $this->notifyUsers($line, $latestStatus);
                 continue;
             }
 
