@@ -7,6 +7,7 @@ parameters:
     locale: en
     app.config:
         title: "TubeAlert"
+        asset_version: 1
 
 framework:
     #esi:             ~

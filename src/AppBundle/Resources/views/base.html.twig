@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <title>{{ meta.fullTitle }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180x180.png" />
-    <link rel="icon" href="/static/icons/favicon.ico" type="image/x-icon" />
-    <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/{{ meta.assetVersion }}/apple-touch-icon-180x180.png" />
+    <link rel="icon" href="/static/icons/{{ meta.assetVersion }}/favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/png" href="/static/icons/{{ meta.assetVersion }}/favicon-96x96.png" sizes="96x96" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-startup-image" href="/static/icons/apple-touch-icon-180x180.png" />
+    <link rel="apple-touch-startup-image" href="/static/icons/{{ meta.assetVersion }}/apple-touch-icon-180x180.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="msapplication-TileColor" content="#383b3f" />
-    <meta name="msapplication-TileImage" content="/static/icons/mstile-144x144.png" />
-    <meta name="msapplication-square150x150logo" content="/static/icons/mstile-150x150.png" />
-    <meta name="msapplication-square310x310logo" content="/static/icons/mstile-310x310.png" />
+    <meta name="msapplication-TileImage" content="/static/icons/{{ meta.assetVersion }}/mstile-144x144.png" />
+    <meta name="msapplication-square150x150logo" content="/static/icons/{{ meta.assetVersion }}/mstile-150x150.png" />
+    <meta name="msapplication-square310x310logo" content="/static/icons/{{ meta.assetVersion }}/mstile-310x310.png" />
     <meta name="theme-color" content="#383b3f" />
     <style>
         {{ source('@static/css/global.css') }}

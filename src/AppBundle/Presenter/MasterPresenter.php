@@ -29,6 +29,7 @@ class MasterPresenter extends Presenter
         $this->meta['title'] = $this->appConfig['title'];
         $this->meta['fullTitle'] = $this->appConfig['title'];
         $this->meta['siteTitle'] = $this->appConfig['title'];
+        $this->meta['assetVersion'] = $this->appConfig['asset_version'];
     }
 
     /**
