@@ -29,15 +29,15 @@ class UpdateController extends Controller
             $output = new NullOutput();
 
             $resultCode = $command->run($input, $output);
+
+            //Create your own folder in the cache directory
+            $fs = new Filesystem();
+            $fs->mkdir(dirname($filename));
+
+            file_put_contents($filename, (string) $now);
         } else {
             $resultCode = 1;
         }
-
-        //Create your own folder in the cache directory
-        $fs = new Filesystem();
-        $fs->mkdir(dirname($filename));
-
-        file_put_contents($filename, (string) $now);
 
         return new JsonResponse((object) [
             'status' => $resultCode,
