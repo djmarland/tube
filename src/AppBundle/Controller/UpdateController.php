@@ -38,6 +38,9 @@ class UpdateController extends Controller
 
         file_put_contents($filename, (string) $now);
 
-        return new Response($resultCode);
+        return new JsonResponse((object) [
+            'status' => $resultCode,
+            'diff' => $diff
+        ]);
     }
 }
