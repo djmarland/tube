@@ -1,4 +1,4 @@
-var VERSION = 1,
+var VERSION = 2,
     CACHE_NAME = 'page-cache-' + VERSION,
     urlsToCache = [
         '/',
