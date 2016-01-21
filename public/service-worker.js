@@ -1,32 +1,43 @@
-var VERSION = 2,
+var VERSION = 3,
     CACHE_NAME = 'page-cache-' + VERSION,
     urlsToCache = [
-        '/',
-        '/settings',
-        '/bakerloo-line',
-        '/central-line',
-        '/circle-line',
-        '/district-line',
-        '/hammersmith-city-line',
-        '/jubilee-line',
-        '/metropolitan-line',
-        '/northern-line',
-        '/piccadilly-line',
-        '/victoria-line',
-        '/waterloo-city-line',
-        '/dlr',
-        '/london-overground',
-        '/tfl-rail'
+        './',
+        'settings',
+        'bakerloo-line',
+        'central-line',
+        'circle-line',
+        'district-line',
+        'hammersmith-city-line',
+        'jubilee-line',
+        'metropolitan-line',
+        'northern-line',
+        'piccadilly-line',
+        'victoria-line',
+        'waterloo-city-line',
+        'dlr',
+        'london-overground',
+        'tfl-rail'
     ];
 
 self.addEventListener('install', function(event) {
     // Perform install steps
-    console.log(VERSION);
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(function(cache) {
                 return cache.addAll(urlsToCache);
             })
+    );
+});
+
+this.addEventListener('activate', function(event) {
+    event.waitUntil(
+        caches.keys().then(function(keyList) {
+            return Promise.all(keyList.map(function(key) {
+                if (key != CACHE_NAME) {
+                    return caches.delete(keyList[i]);
+                }
+            }));
+        })
     );
 });
 
