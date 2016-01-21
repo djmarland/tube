@@ -106,7 +106,7 @@ class StatusUpdateCommand extends ContainerAwareCommand
                 $line->getName(),
                 $line->getStatusSummary(),
                 '/' . $line->getURLKey(),
-                '/static/icons/' . $config->asset_version . 'icon-' . $line->getURLKey() . '.png'
+                '/static/icons/' . $config->asset_version . '/icon-' . $line->getURLKey() . '.png'
             );
         }
 
