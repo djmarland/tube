@@ -96,4 +96,30 @@ class SubscriptionService extends Service
             throw $e;
         }
     }
+
+    public function removeForEndpoint(
+        string $endpoint
+    ) {
+        $qb = $this->getQueryBuilder(self::SUBSCRIPTION_ENTITY);
+
+        // start a transaction
+        $this->entityManager->getConnection()->beginTransaction();
+        try {
+            // set all previous subscriptions for this line and endpoint to inactive
+            $q = $qb->update()
+                ->set(self::TBL . '.is_active', '0')
+                ->where(self::TBL . '.endpoint = :endpoint')
+                ->setParameter('endpoint', $endpoint)
+                ->getQuery();
+            $q->execute();
+
+            // commit the transaction
+            $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->entityManager->getConnection()->rollback();
+            throw $e;
+        }
+    }
 }

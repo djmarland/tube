@@ -48,7 +48,6 @@ a {
     margin-right: auto;
     padding-left: $grid-unit-small;
     padding-right: $grid-unit-small;
-    max-width: 1280px;
 }
 
 @include mq($from: m) {

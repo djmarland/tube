@@ -36,6 +36,12 @@ body[data-view="settings"] {
     }
 }
 
+body[data-view="settings"] {
+    #js-settings {
+        display: none;
+    }
+}
+
 @include mq($from: l) {
     body {
         padding-top: 0;

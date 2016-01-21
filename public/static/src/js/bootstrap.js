@@ -24,7 +24,9 @@
             lineBoxSummary : '[data-js="linebox-summary"]',
             notificationsPanel : '[data-js="notifications-panel"]',
             notificationsSave : '[data-js="notifications-save"]',
-            notificationsStatus : '[data-js="notifications-progress"]'
+            notificationsDelete : '[data-js="notifications-delete"]',
+            notificationsStatus : '[data-js="notifications-progress"]',
+            notificationsSettings : '[data-js="notifications-settings"]'
         },
         paths : {
             data : '/all.json',
@@ -182,8 +184,11 @@
             }
         },
         initialiseServiceWorker : function() {
+            var body = document.body;
             if (this.currentLine) {
                 this.setNotificationsPanel(this.currentLine);
+            } else if (body.dataset.view == this.bodyView.settings) {
+                this.setNotificationsSettings();
             }
         },
         stringToDom : function(string) {
@@ -252,7 +257,8 @@
             body.dataset.pageline = null;
             this.currentLine = null;
             if (!popped) {
-                window.history.pushState({}, '', path); // @todo - sort titles
+                document.title = 'TubeAlert';
+                window.history.pushState({}, 'TubeAlert', path);
             }
         },
         goToSettings : function(popped) {
@@ -263,11 +269,13 @@
                 return;
             }
             this.swapBody(this.settingsTemplate);
+            this.setNotificationsSettings();
             body.dataset.view = this.bodyView.settings;
             body.dataset.pageline = null;
             this.currentLine = null;
             if (!popped) {
-                window.history.pushState({}, '', path); // @todo - sort titles
+                document.title = 'Settings - TubeAlert';
+                window.history.pushState({}, 'Settings - TubeAlert', path);
             }
         },
         goToLine : function(lineKey, popped) {
@@ -284,7 +292,8 @@
             body.dataset.pageline = lineKey;
             this.currentLine = lineKey;
             if (!popped) {
-                window.history.pushState({}, '', path); // @todo - sort titles
+                document.title = lineData.name + ' - TubeAlert';
+                window.history.pushState({}, lineData.name + ' - TubeAlert', path); // @todo - sort titles
             }
         },
         setNotificationsPanel : function(lineKey) {
@@ -321,8 +330,33 @@
                 target.innerHTML = '';
                 target.appendChild(panel);
             }.bind(this));
+        },
+        setNotificationsSettings : function() {
+            var target = document.querySelector(this.selectors.notificationsSettings),
+                settingsTemplate = document.getElementById('template-settings'),
+                panel = document.importNode(settingsTemplate.content, true),
+                button;
 
+            if (!('ServiceWorkerRegistration' in window) ||
+                !('showNotification' in ServiceWorkerRegistration.prototype) ||
+                !('PushManager' in window)) {
+                return; //push notifications not supported
+            }
 
+            if (Notification.permission === 'denied') {
+                target.innerHTML = 'You have denied access for notifications';
+                return;
+            }
+
+            target.innerHTML = '';
+            target.appendChild(panel);
+
+            button = document.querySelector(this.selectors.notificationsDelete);
+
+            button.addEventListener('click', function() {
+                button.disabled = true;
+                this.cancelSubscription(panel, button);
+            }.bind(this));
         },
         setTimes : function(times, panel) {
             var l = times.length,
@@ -388,6 +422,43 @@
                         }
                     }.bind(this));
             }.bind(this));
+        },
+        cancelSubscription : function(panel, button) {
+            this.updateStatus('<span class="loading loading--leading"></span>Saving...');
+
+            navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+                serviceWorkerRegistration.pushManager.getSubscription().then(
+                    function(pushSubscription) {
+                        var url = '/notifications/unsubscribe?endpoint=' + pushSubscription.endpoint;
+                        // Check we have everything we need to unsubscribe
+                        if (!pushSubscription || !pushSubscription.unsubscribe) {
+                            return;
+                        }
+
+                        pushSubscription.unsubscribe();
+                        // clear from indexedDB
+                        this.setData('times', JSON.stringify({}));
+                        // send a message saying cleared
+                        this.ajax(url, function(data) {
+                            var status = JSON.parse(data);
+                            if (status.status && status.status === 'ok') {
+                                this.updateStatus('Unsubscribed');
+                                return;
+                            }
+                            this.updateStatus('An error occurred');
+                        }.bind(this), function() {
+                            this.updateStatus('An error occurred');
+                        }.bind(this));
+                        button.disabled = false;
+                    }.bind(this)).catch(function(e) {
+                        this.updateStatus('No subscription found. You\'re clear.');
+                }.bind(this));
+            }.bind(this));
+
+            setTimeout(function() {
+                button.disabled = false;
+                this.updateStatus('Done');
+            }.bind(this), 2000);
         },
         getTimes : function() {
             var panel = document.querySelector(this.selectors.notificationsPanel),

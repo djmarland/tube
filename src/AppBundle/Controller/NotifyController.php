@@ -68,6 +68,23 @@ class NotifyController extends Controller
         ]);
     }
 
+    public function unsubscribeAction(Request $request)
+    {
+        $endpoint = $request->get('endpoint');
+
+        if (!$endpoint) {
+            throw new HttpException(400, 'Missing data');
+        }
+
+        $result = $this->get('app.services.subscriptions')->removeForEndpoint($endpoint);
+
+
+        // @todo - return appropriate response
+        return new JsonResponse((object) [
+            'status' => $result ? 'ok' : 'error'
+        ]);
+    }
+
     private function groupTimes($times): array
     {
         $days = [];
@@ -103,11 +120,5 @@ class NotifyController extends Controller
             $days[$i] = $groups;
         }
         return $days;
-    }
-
-    public function unsubscribeAction()
-    {
-
-        throw new HttpException(404, 'Not yet');
     }
 }

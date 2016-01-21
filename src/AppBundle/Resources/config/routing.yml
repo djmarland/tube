@@ -10,6 +10,10 @@ notifications_subscribe:
   path:     /notifications/subscribe
   defaults: { _controller: AppBundle:Notify:subscribe }
 
+notifications_unsubscribe:
+  path:     /notifications/unsubscribe
+  defaults: { _controller: AppBundle:Notify:unsubscribe }
+
 notifications_latest:
   path:     /notifications/latest
   defaults: { _controller: AppBundle:Notify:latest }
