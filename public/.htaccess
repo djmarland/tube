@@ -883,9 +883,9 @@ FileETag None
 
   # JavaScript
 
-    ExpiresByType application/javascript                "access plus 1 year"
-    ExpiresByType application/x-javascript              "access plus 1 year"
-    ExpiresByType text/javascript                       "access plus 1 year"
+    ExpiresByType application/javascript                "access plus 1 hour"
+    ExpiresByType application/x-javascript              "access plus 1 hour"
+    ExpiresByType text/javascript                       "access plus 1 hour"
 
 
   # Manifest files

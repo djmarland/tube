@@ -125,7 +125,7 @@
                 if ('serviceWorker' in navigator &&
                     'content' in document.createElement('template')
                 ) {
-                    navigator.serviceWorker.register('/service-worker.js', {scope:'/'})
+                    navigator.serviceWorker.register('/sw.js', {scope:'/'})
                         .then(this.initialiseServiceWorker.bind(this));
                 }
             }.bind(this);
