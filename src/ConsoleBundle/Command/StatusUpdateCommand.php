@@ -103,7 +103,7 @@ class StatusUpdateCommand extends ContainerAwareCommand
             $notificationService->createNew(
                 $subscription->getEndpoint(),
                 $line->getName(),
-                $line->getStatusSummary(),
+                $status->getShortTitle(),
                 '/' . $line->getURLKey(),
                 '/static/icons/' . $config['asset_version'] . '/icon-' . $line->getURLKey() . '.png'
             );
