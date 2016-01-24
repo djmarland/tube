@@ -62,6 +62,7 @@ class StatusUpdateCommand extends Command
             ) {
                 // refresh the "updated" time
                 $updateService->refreshStatus($latestStatus);
+                $this->notifyUsers($line, $line->getLatestStatus());
                 $output->writeln('Status unchanged. Saving updated time');
                 continue;
             }

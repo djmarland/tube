@@ -1,4 +1,4 @@
-var VERSION = 7,
+var VERSION = 8,
     CACHE_NAME = 'page-cache-' + VERSION,
     urlsToCache = [
         './',
@@ -29,12 +29,12 @@ self.addEventListener('install', function(event) {
     );
 });
 
-this.addEventListener('activate', function(event) {
+self.addEventListener('activate', function(event) {
     event.waitUntil(
         caches.keys().then(function(keyList) {
             return Promise.all(keyList.map(function(key) {
                 if (key != CACHE_NAME) {
-                    return caches.delete(keyList[i]);
+                    return caches.delete(key);
                 }
             }));
         })

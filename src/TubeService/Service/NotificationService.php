@@ -39,10 +39,4 @@ class NotificationService extends Service
         $this->entityManager->flush();
         return $notification;
     }
-
-    public function clearForEndpoint($endpoint): boolean
-    {
-        // set all "processed" to 1
-        return true;
-    }
 }

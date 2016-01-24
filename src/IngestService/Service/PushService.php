@@ -57,6 +57,6 @@ class PushService
 
     public function notifyFirefoxUsers($subscriptions)
     {
-
+        // can't support this yet
     }
 }

@@ -27,6 +27,7 @@ class SubscriptionMapper extends Mapper
             $item->getStartHour(),
             $item->getEndHour(),
             $item->getIsActive(),
+            $item->getPublicKey(),
             $line
         );
 

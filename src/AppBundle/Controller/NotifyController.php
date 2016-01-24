@@ -38,11 +38,21 @@ class NotifyController extends Controller
     public function subscribeAction(Request $request)
     {
         $endpoint = $request->get('endpoint');
+        $key = $request->get('key', null);
         $line = $request->get('line');
         $times = $request->get('times');
 
         if (!$endpoint || !$line || !$times) {
             throw new HttpException(400, 'Missing data');
+        }
+
+
+        // temporarily disable firefox - as the encryption in php is not working
+        if (strpos($endpoint, 'mozilla') !== false) {
+            return new JsonResponse((object)[
+                'status' => 'error',
+                'message' => 'Sorry, Firefox is not yet supported'
+            ]);
         }
 
         $line = $this->get('app.services.line')->findByKey($line);
@@ -58,11 +68,12 @@ class NotifyController extends Controller
 
         $times = $this->groupTimes($times);
 
+        try {
+            $result = $this->get('app.services.subscriptions')->setForLine($line, $endpoint, $times, $key);
+        } catch (Exception $e) {
+            $result = false;
+        }
 
-        $result = $this->get('app.services.subscriptions')->setForLine($line, $endpoint, $times);
-
-
-        // @todo - return appropriate response
         return new JsonResponse((object) [
             'status' => $result ? 'ok' : 'error'
         ]);
@@ -78,8 +89,6 @@ class NotifyController extends Controller
 
         $result = $this->get('app.services.subscriptions')->removeForEndpoint($endpoint);
 
-
-        // @todo - return appropriate response
         return new JsonResponse((object) [
             'status' => $result ? 'ok' : 'error'
         ]);

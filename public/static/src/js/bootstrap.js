@@ -293,7 +293,7 @@
             this.currentLine = lineKey;
             if (!popped) {
                 document.title = lineData.name + ' - TubeAlert';
-                window.history.pushState({}, lineData.name + ' - TubeAlert', path); // @todo - sort titles
+                window.history.pushState({}, lineData.name + ' - TubeAlert', path);
             }
         },
         setNotificationsPanel : function(lineKey) {
@@ -381,20 +381,17 @@
 
             this.updateStatus('<span class="loading loading--leading"></span>Saving...');
 
-            this.getData('times', function(data) {
-                if (data) {
-                    data = JSON.parse(data);
-                } else {
-                    data = {}
-                }
-                data[lineKey] = times;
-                this.setData('times', JSON.stringify(data));
-            }.bind(this));
-
             navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
                 serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly:true})
                     .then(function(subscription) {
-                        var url = '/notifications/subscribe?endpoint=' + subscription.endpoint + '&line=' + this.currentLine;
+                        var url = '/notifications/subscribe?endpoint=' +
+                                subscription.endpoint +
+                                '&line=' + this.currentLine;
+
+                        // Add firefox support once encryption is understood
+                        //if (subscription.getKey) {
+                        //    url += '&key=' + btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh'))))
+                        //}
 
                         // The subscription was successful
                         button.disabled = false;
@@ -402,12 +399,25 @@
                         url += '&times=' + times;
 
                         this.ajax(url, function(data) {
-                            var status = JSON.parse(data);
+                            var status = JSON.parse(data),
+                                e = '';
                             if (status.status && status.status === 'ok') {
-                                this.updateStatus('Saved');
+                                this.getData('times', function(DBdata) {
+                                    if (DBdata) {
+                                        DBdata = JSON.parse(DBdata);
+                                    } else {
+                                        DBdata = {}
+                                    }
+                                    DBdata[lineKey] = times;
+                                    this.setData('times', JSON.stringify(DBdata));
+                                    this.updateStatus('Saved');
+                                }.bind(this));
                                 return;
                             }
-                            this.updateStatus('An error occurred');
+                            if (status.message) {
+                                e = status.message;
+                            }
+                            this.updateStatus('An error occurred. ' + e);
                         }.bind(this), function() {
                             this.updateStatus('An error occurred');
                         }.bind(this));
@@ -417,7 +427,7 @@
                             this.updateStatus('Permission denied');
                             button.disabled = false;
                         } else {
-                            this.updateStatus('Unable to subscribe');
+                            this.updateStatus('Unable to subscribe. No support in your browser');
                             button.disabled = false;
                         }
                     }.bind(this));

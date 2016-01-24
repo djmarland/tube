@@ -84,7 +84,8 @@ class SubscriptionService extends Service
     public function setForLine(
         Line $line,
         $endpoint,
-        $times
+        $times,
+        $key = null
     ) {
         $qb = $this->getQueryBuilder(self::SUBSCRIPTION_ENTITY);
 
@@ -110,6 +111,7 @@ class SubscriptionService extends Service
                     $subscription->setLine($lineEntity);
                     $subscription->setDay($day);
                     $subscription->setEndpoint($endpoint);
+                    $subscription->setPublicKey($key);
                     $subscription->setStartHour($group->start);
                     $subscription->setEndHour($group->end);
                     $this->entityManager->persist($subscription);

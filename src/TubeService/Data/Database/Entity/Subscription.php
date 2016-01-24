@@ -26,8 +26,11 @@ class Subscription extends Entity
     /** @ORM\Column(type="integer") */
     private $end_hour;
 
-    /** @ORM\Column(type="string", length=10000) */
+    /** @ORM\Column(type="string", length=2000) */
     private $endpoint;
+
+    /** @ORM\Column(type="string", length=2000, nullable=true) */
+    private $public_key = null;
 
 
     public function getLine()
@@ -82,5 +85,14 @@ class Subscription extends Entity
     public function setEndpoint($endpoint)
     {
         $this->endpoint = $endpoint;
+    }
+
+    public function getPublicKey()
+    {
+        return $this->public_key;
+    }
+    public function setPublicKey($public_key)
+    {
+        $this->public_key = $public_key;
     }
 }

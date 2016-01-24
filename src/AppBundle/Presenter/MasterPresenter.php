@@ -53,7 +53,7 @@ class MasterPresenter extends Presenter
         if (isset($this->data[$key])) {
             return $this->data[$key]->data;
         }
-        throw new \Exception; // todo - use a custom one
+        throw new \Exception;
     }
 
     public function getData()

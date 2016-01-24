@@ -36,7 +36,6 @@ class ServiceResult implements ServiceResultInterface
     public function getTotal(): int
     {
         if (is_null($this->total)) {
-            // @todo - throw a better exception
             throw new \Exception('Tried to call total when no count had been asked for');
         }
         return $this->total;

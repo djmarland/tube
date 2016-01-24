@@ -19,6 +19,7 @@ class Subscription extends Entity
         int $startHour,
         int $endHour,
         bool $isActive,
+        string $publicKey = null,
         Line $line = null
     ) {
         parent::__construct(
@@ -28,6 +29,7 @@ class Subscription extends Entity
         );
 
         $this->endpoint = $endpoint;
+        $this->publicKey = $publicKey;
         $this->day = $day;
         $this->startHour = $startHour;
         $this->endHour = $endHour;
@@ -81,11 +83,21 @@ class Subscription extends Entity
         return $this->endpoint;
     }
 
+    private $publicKey;
+
+    public function getPublicKey()
+    {
+        return $this->publicKey;
+    }
+
     public function getType()
     {
         $endpoint = $this->getEndpoint();
         if (strpos($endpoint, 'https://android.googleapis.com/gcm/send') !== false) {
             return self::TYPE_CHROME;
+        }
+        if (strpos($endpoint, 'https://updates.push.services.mozilla.com') !== false) {
+            return self::TYPE_FIREFOX;
         }
 
         return null;
