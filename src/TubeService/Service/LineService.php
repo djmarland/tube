@@ -36,4 +36,17 @@ class LineService extends Service
         $result = $qb->getQuery()->getResult();
         return $this->getServiceResultFromDatabaseResult($result);
     }
+
+    public function findAllDisrupted(): ServiceResultInterface
+    {
+        $tblStatus = 's';
+
+        $qb = $this->getQueryBuilder(self::LINE_ENTITY);
+        $qb->select(self::TBL, $tblStatus)
+            ->leftJoin(self::TBL . '.latest_status', $tblStatus)
+            ->where($tblStatus . '.is_disrupted = :is_disrupted')
+            ->setParameters(['is_disrupted' => true]);
+        $result = $qb->getQuery()->getResult();
+        return $this->getServiceResultFromDatabaseResult($result);
+    }
 }

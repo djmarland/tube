@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TubeService\Domain\Entity\Line;
 
-class StatusUpdateCommand extends ContainerAwareCommand
+class StatusUpdateCommand extends Command
 {
 
     protected function configure()
@@ -72,6 +72,8 @@ class StatusUpdateCommand extends ContainerAwareCommand
 
             $output->writeln('Notifying subscribed users');
             $this->notifyUsers($line, $status);
+            // we sent out notifications. Sleep for 2 seconds before sending out more
+            sleep(2);
         }
 
         $output->writeln('');
@@ -94,28 +96,11 @@ class StatusUpdateCommand extends ContainerAwareCommand
         );
         // split the results by type
         $subscriptions = $result->getDomainModels();
-
-        $notificationService = $this->getContainer()->get('console.services.notification');
-
-        $config = $this->getContainer()->getParameter('app.config');
-        foreach($subscriptions as $subscription) {
-            // create a notification for everyone
-            $notificationService->createNew(
-                $subscription->getEndpoint(),
-                $line->getName(),
-                $status->getShortTitle(),
-                '/' . $line->getURLKey(),
-                '/static/icons/' . $config['asset_version'] . '/icon-' . $line->getURLKey() . '.png'
-            );
-        }
-
-        $pushService = $this->getContainer()->get('console.services.push');
-        $pushService->notifyChromeUsers(array_filter($subscriptions, function($sub) {
-            return $sub->isChrome();
-        }));
-        $pushService->notifyFirefoxUsers(array_filter($subscriptions, function($sub) {
-            return $sub->isFirefox();
-        }));
+        return $this->notify(
+            $line,
+            $status->getShortTitle(),
+            $subscriptions
+        );
     }
 
     private function getTFLLine($lines, $id)

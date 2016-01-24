@@ -6,6 +6,10 @@ update:
   path:     /update
   defaults: { _controller: AppBundle:Update:minute }
 
+hour:
+  path:     /hour
+  defaults: { _controller: AppBundle:Update:hour }
+
 notifications_subscribe:
   path:     /notifications/subscribe
   defaults: { _controller: AppBundle:Notify:subscribe }

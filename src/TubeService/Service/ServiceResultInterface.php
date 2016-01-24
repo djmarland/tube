@@ -10,6 +10,7 @@ interface ServiceResultInterface
     public function isEmpty();
 
     public function getTotal();
+    public function getResultCount();
     public function getDomainModels();
     public function getDomainModel();
 }

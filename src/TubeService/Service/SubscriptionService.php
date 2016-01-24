@@ -52,6 +52,35 @@ class SubscriptionService extends Service
         // - they have an end hour after or equal to now
     }
 
+    public function findAllForLineAndHour(
+        Line $line,
+        int $day,
+        int $hour
+    ): ServiceResultInterface {
+        $qb = $this->getQueryBuilder(self::SUBSCRIPTION_ENTITY);
+        $qb->select(self::TBL)
+            ->where(
+                'IDENTITY(' . self::TBL . '.line) = :line',
+                self::TBL . '.is_active = 1',
+                self::TBL . '.day = :day',
+                self::TBL . '.start_hour = :hour'
+            )
+            ->setParameters([
+                'line' => $line->getId()->getId(),
+                'day' => $day,
+                'hour' => $hour
+            ]);
+        $result = $qb->getQuery()->getResult();
+        return $this->getServiceResultFromDatabaseResult($result);
+
+        // get all subscriptions where
+        // - they are for this line
+        // - they are active
+        // - they are today
+        // - they have a start hour before or equal to now AND
+        // - they have an end hour after or equal to now
+    }
+
     public function setForLine(
         Line $line,
         $endpoint,
