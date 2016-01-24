@@ -72,7 +72,7 @@ class UpdateController extends Controller
             $fs = new Filesystem();
             $fs->mkdir(dirname($filename));
 
-            file_put_contents($filename, (string) $now);
+            file_put_contents($filename, $timestamp);
         } else {
             $resultCode = 1;
         }
