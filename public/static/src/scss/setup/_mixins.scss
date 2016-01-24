@@ -25,7 +25,7 @@
 
 @mixin flex-grow($size) {
     // If you omit this line it will go properly mental in IE10
-    -ms-flex: $size $size 0%;
+    //-ms-flex: $size;
     -webkit-flex-grow: $size;
     flex-grow: $size;
 }

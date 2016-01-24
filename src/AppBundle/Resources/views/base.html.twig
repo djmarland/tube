@@ -37,7 +37,8 @@
 {% block header %}
 <div class="app">
     <div class="app__main">
-        <header class="app__header header">
+        <div class="app__header header">
+            <header>
             <div class="header__logo">
                 <a href="/" id="js-back-logo">{{ meta.siteTitle }}</a>
             </div>
@@ -51,7 +52,8 @@
                     <svg><use xlink:href="#icon-settings"></use></svg>
                 </a>
             </div>
-        </header>
+            </header>
+        </div>
         <div class="page" id="page">
             <main class="main">
                 <div id="main-body" data-js="main-body">
