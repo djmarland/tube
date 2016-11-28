@@ -21,6 +21,10 @@ class StatusHourlyCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->getContainer()->getParameter('enable_notifications')) {
+            $output->writeln('Notifications disabled');
+            return;
+        }
         $output->writeln('Starting...');
         $output->writeln('Getting disrupted lines...');
         $lines = $this->getContainer()->get('console.services.line')->findAllDisrupted();

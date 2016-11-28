@@ -21,3 +21,5 @@ parameters:
     tfl_app_id: ~
     tfl_app_key: ~
     google_server_key: ~
+
+    enable_notifications: true

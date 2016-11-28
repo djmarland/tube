@@ -70,10 +70,14 @@ class StatusUpdateCommand extends Command
             // update the statuses
             $status = $updateService->addNewStatus($line, $tflLine);
 
-            $output->writeln('Notifying subscribed users');
-            $this->notifyUsers($line, $status);
-            // we sent out notifications. Sleep for 2 seconds before sending out more
-            sleep(2);
+            if ($this->getContainer()->getParameter('enable_notifications')) {
+                $output->writeln('Notifying subscribed users');
+                $this->notifyUsers($line, $status);
+                // we sent out notifications. Sleep for 2 seconds before sending out more
+                sleep(2);
+            } else {
+                $output->writeln('Notifications disabled');
+            }
         }
 
         $output->writeln('');
