@@ -21,6 +21,7 @@ var VERSION = 9,
 
 self.addEventListener('install', function(event) {
     // Perform install steps
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(function(cache) {
@@ -44,22 +45,24 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('push', function(event) {
     return event.waitUntil(
         self.registration.pushManager.getSubscription().then(function(subscription) {
-            if (!subscription) {
-                return null;
-            }
-            return subscription.endpoint;
-        }).then(function(endpoint) {
+            var endpoint = subscription.endpoint;
             updateStatuses();
-            return fetch('/notifications/latest?endpoint=' + endpoint)
+            return fetch('/notifications/latest?endpoint=' + endpoint + '&subscription=' + JSON.stringify(subscription))
                 .then(function(response) {
                     return response.json();
                 });
         }).then(function(notification) {
+            if (!notification) {
+              return;
+            }
+
             return self.registration.showNotification(notification.title, {
                 body: notification.description,
                 icon: notification.image,
                 tag: notification.url
             });
+        }).catch(function () {
+          // do nothing
         })
     );
 });

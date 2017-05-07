@@ -22,6 +22,19 @@ class SubscriptionService extends Service
         return $this->getServiceResultFromDatabaseResult($result);
     }
 
+    public function addSubscriptionData($endpoint, $subscription)
+    {
+        $qb = $this->getQueryBuilder(self::SUBSCRIPTION_ENTITY);
+        $qb->update()
+            ->set(self::TBL . '.subscription', ':subscription')
+            ->where(self::TBL . '.endpoint', ':endpoint')
+            ->setParameters([
+                'subscription' => $subscription,
+                'endpoint' => $endpoint
+            ]);
+        $qb->getQuery()->execute();
+    }
+
     public function findAllForLineAndTime(
         Line $line,
         int $day,

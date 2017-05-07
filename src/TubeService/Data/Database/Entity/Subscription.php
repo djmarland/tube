@@ -29,6 +29,9 @@ class Subscription extends Entity
     /** @ORM\Column(type="string", length=2000) */
     private $endpoint;
 
+    /** @ORM\Column(type="text", nullable=true) */
+    private $subscription;
+
     /** @ORM\Column(type="string", length=2000, nullable=true) */
     private $public_key = null;
 
@@ -85,6 +88,15 @@ class Subscription extends Entity
     public function setEndpoint($endpoint)
     {
         $this->endpoint = $endpoint;
+    }
+
+    public function getSubscription()
+    {
+        return $this->subscription;
+    }
+    public function setSubscription($subscription)
+    {
+        $this->subscription = $subscription;
     }
 
     public function getPublicKey()

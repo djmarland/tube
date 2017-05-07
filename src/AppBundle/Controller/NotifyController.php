@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class NotifyController extends Controller
@@ -28,8 +29,19 @@ class NotifyController extends Controller
             throw new HttpException(400, 'Missing data');
         }
 
+        // save the subscription data for this user
+        $subscription = $request->get('subscription', null);
+
+        if ($subscription) {
+            $this->get('app.services.subscriptions')->addSubscriptionData($endpoint, $subscription);
+        }
+
         // get the latest notification for this user
         $result = $this->get('app.services.notifcation')->findForEndpoint($endpoint);
+
+        if ($result->getTitle() === 'DUMMY') {
+            return new Response('<DUMMY>');
+        }
 
         return new JsonResponse($result->getDomainModel());
 
