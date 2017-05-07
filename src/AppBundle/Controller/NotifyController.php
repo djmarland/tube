@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use TubeService\Service\ServiceResultInterface;
 
 class NotifyController extends Controller
 {
@@ -37,9 +38,10 @@ class NotifyController extends Controller
         }
 
         // get the latest notification for this user
+        /** @var ServiceResultInterface $result */
         $result = $this->get('app.services.notifcation')->findForEndpoint($endpoint);
 
-        if ($result->getTitle() === 'DUMMY') {
+        if (!$result->isEmpty() && $result->getDomainModel()->getTitle() === 'DUMMY') {
             return new Response('<DUMMY>');
         }
 
