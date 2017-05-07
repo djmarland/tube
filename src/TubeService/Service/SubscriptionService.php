@@ -27,7 +27,7 @@ class SubscriptionService extends Service
         $qb = $this->getQueryBuilder(self::SUBSCRIPTION_ENTITY);
         $qb->update()
             ->set(self::TBL . '.subscription', ':subscription')
-            ->where(self::TBL . '.endpoint', ':endpoint')
+            ->where(self::TBL . '.endpoint = :endpoint')
             ->setParameters([
                 'subscription' => $subscription,
                 'endpoint' => $endpoint
